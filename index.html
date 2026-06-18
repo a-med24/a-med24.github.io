@@ -309,12 +309,11 @@
           <p>I'm pursuing it as a Computer Science and Applied Statistics double major at the University of Illinois at Chicago. Computer science was the natural starting point; I added Applied Statistics after a data science workshop made me realize how much I wanted to use data — the huge amount of it we can pull from the internet — to aid research and answer real questions.</p>
           <p>Outside of class I learn new languages, build projects, and stay active in student organizations — I'm a member of LOGICA (the Latinx Organization of Growth and Computer Analytics) and the Association for Computing Machinery (ACM). I'm looking for opportunities in software engineering or data science where I can contribute to impactful projects and keep growing as both a developer and an analyst.</p>
         </div>
-        <!-- Alex: tweak these stats however you like -->
+      
         <div class="stats" aria-label="By the numbers">
-          <div class="stat"><div class="n">2</div><div class="l">Majors, one brain</div></div>
-          <div class="stat"><div class="n">UIC</div><div class="l">Chicago, IL</div></div>
-          <div class="stat"><div class="n">01</div><div class="l">workshop, hooked</div></div>
-          <div class="stat"><div class="n">∞</div><div class="l">CSVs cleaned</div></div>
+          <div class="stat"><div class="n">3.5</div><div class="l">GPA</div></div>
+          <div class="stat"><div class="n">Located in</div><div class="l">Chicago, IL</div></div>
+          <div class="stat"><div class="n">Junior
         </div>
       </div>
     </div>
@@ -331,7 +330,7 @@
     <div class="wrap">
       <div class="sec-head"><h2>Résumé</h2><span class="sec-no">// 03</span></div>
       <div class="timeline">
-        <div class="tl"><div class="when">Class of 20XX</div><div><h4>B.S. Computer Science &amp; Applied Statistics</h4><div class="where">University of Illinois at Chicago</div><p>Coursework: Data Structures, Program Design, Software Design, Languages and Automata, Programming Practicum, Machine Organization.</p></div></div>
+        <div class="tl"><div class="when">Class of 2028</div><div><h4>B.S. Computer Science &amp; Applied Statistics</h4><div class="where">University of Illinois at Chicago</div><p>Coursework: Data Structures, Program Design, Software Design, Languages and Automata, Programming Practicum, Machine Organization.</p></div></div>
         <div class="tl"><div class="when">Current</div><div><h4>Student Organizations</h4><div class="where">LOGICA · ACM</div><p>Active member of LOGICA (Latinx Organization of Growth and Computer Analytics) and the Association for Computing Machinery (ACM) — building professional skills and connecting with the CS community.</p></div></div>
       </div>
       <div style="margin-top:26px">
@@ -340,8 +339,7 @@
           <span class="tag">Python</span><span class="tag">JavaScript</span><span class="tag">C / C++</span><span class="tag">R</span><span class="tag">Java</span><span class="tag">PowerShell</span>
         </div>
       </div>
-      <!-- RÉSUMÉ PDF: drop a file named resume.pdf next to index.html.
-           The <object> shows it inline; phones that can't render it show the fallback link. -->
+
       <div style="margin-top:30px;border:1px solid var(--line);border-radius:14px;overflow:hidden">
         <object data="resume.pdf#view=FitH" type="application/pdf"
                 width="100%" style="height:560px;display:block;border:0">
@@ -370,8 +368,7 @@
   </section>
 
   <footer>
-    <span>© <span id="year"></span> Alex Medina — built from scratch</span>
-    <span>x: 60.4, y: 18.2 · you are here</span>
+    <span>© <span id="year"></span> Alex Medina </span>
   </footer>
 </main>
 
@@ -420,21 +417,13 @@
 </div>
 
 <script>
-/* ================================================================
-   EDIT HERE — this is the only block you need to change.
-   Each project becomes a card in READ mode AND a data point in PLAY
-   mode. x/y are positions on the plot (0–1 fractions of the screen).
-   ================================================================ */
+
 const PROJECTS = [
-  // Alex — add your projects here. Each one becomes a card (Read mode) AND a point (Play mode).
-  // x / y are positions on the game plane: 0–1 fractions of the screen (0,0 = top-left).
-  // Copy this template for each project:
-  //
   // { name:"Project name", x:0.30, y:0.35, tags:["Tag","Tag"],
   //   desc:"One or two sentences about what it does.",
   //   live:"https://your-demo.com", code:"https://github.com/you/repo" },
 ];
-/* ================================================================ */
+
 
 document.getElementById('year').textContent = new Date().getFullYear();
 const fmt = (n) => String(n).padStart(2,'0');
