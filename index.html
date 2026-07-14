@@ -277,11 +277,43 @@
   .sheet p{color:var(--slate);margin-bottom:16px}
   .sheet .tags{margin-bottom:18px}
 
+  /* ============================================================
+     FULL PROJECT POST — a dedicated article view with a cover
+     photo, full write-up, and gallery. Opened from a card or the
+     quick-look popup via "Read full post".
+     ============================================================ */
+  .post{position:fixed;inset:0;z-index:70;display:none;background:var(--paper);overflow-y:auto}
+  .post.on{display:block}
+  .post-bar{
+    position:sticky;top:0;z-index:2;display:flex;justify-content:space-between;align-items:center;
+    padding:14px clamp(18px,5vw,48px);background:rgba(236,250,243,.86);
+    backdrop-filter:blur(10px);border-bottom:1px solid var(--line);
+  }
+  .post-back{appearance:none;border:0;background:none;cursor:pointer;font-family:var(--mono);font-weight:700;font-size:.82rem;color:var(--cobalt)}
+  .post-back:hover{text-decoration:underline}
+  .post .close{appearance:none;border:1px solid var(--line);background:var(--paper);width:34px;height:34px;border-radius:50%;cursor:pointer;font-size:1.1rem;color:var(--slate);line-height:1}
+  .post .close:hover{border-color:var(--ink);color:var(--ink)}
+  .post-cover{width:100%;max-height:420px;overflow:hidden;background:var(--paper-2)}
+  .post-cover img{width:100%;height:100%;max-height:420px;object-fit:cover;display:block}
+  .post-body{padding-top:40px;padding-bottom:90px;max-width:760px}
+  .post-no{font-family:var(--mono);font-size:.8rem;color:var(--cobalt);margin-bottom:8px}
+  .post-body h2{font-family:var(--display);font-weight:700;font-size:clamp(1.8rem,4vw,2.6rem);letter-spacing:-.015em;margin-bottom:14px}
+  .post-body .tags{margin-bottom:20px}
+  .post-links{display:flex;flex-wrap:wrap;gap:16px;font-family:var(--mono);font-size:.85rem;font-weight:700;margin-bottom:32px}
+  .post-links a{color:var(--cobalt);display:inline-flex;align-items:center;gap:5px}
+  .post-links a:hover{text-decoration:underline}
+  .post-desc p{color:var(--ink);font-size:1.05rem;line-height:1.75;margin-bottom:1.2em;max-width:68ch}
+  .post-desc p:last-child{margin-bottom:0}
+  .post-gallery{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px;margin-top:38px}
+  .post-gallery img{width:100%;aspect-ratio:4/3;border-radius:12px;border:1px solid var(--line);object-fit:cover;background:var(--paper-2)}
+
   /* ---------- RESPONSIVE ---------- */
   @media(max-width:720px){
     .about-grid{grid-template-columns:1fr}
     .tl{grid-template-columns:1fr;gap:4px}
     .hud-help{display:none}
+    .post-cover{max-height:260px}
+    .post-cover img{max-height:260px}
   }
 
   /* ---------- REDUCED MOTION ---------- */
@@ -457,6 +489,27 @@
   </div>
 </div>
 
+<!-- ============================== FULL PROJECT POST ============================== -->
+<div class="post" id="post" role="dialog" aria-modal="true" aria-labelledby="post-title">
+  <div class="post-inner">
+    <div class="post-bar">
+      <button class="post-back" id="postBack">← Back</button>
+      <button class="close" id="postClose" aria-label="Close">✕</button>
+    </div>
+    <div class="post-cover" id="post-cover" style="display:none">
+      <img id="post-cover-img" src="" alt="">
+    </div>
+    <div class="post-body wrap">
+      <div class="post-no" id="post-no"></div>
+      <h2 id="post-title"></h2>
+      <div class="tags" id="post-tags"></div>
+      <div class="post-links" id="post-links"></div>
+      <div class="post-desc" id="post-desc"></div>
+      <div class="post-gallery" id="post-gallery"></div>
+    </div>
+  </div>
+</div>
+
 <script>
 
 /* ================================================================
@@ -474,6 +527,7 @@
      tags  — array of short strings (languages, tools, topics).
              Colors cycle automatically — no styling needed.
      desc  — one or two sentences on what it does / why it matters.
+             Shown on the card and in the quick-look popup.
      live  — link to a live demo or write-up. Use "" if none.
      code  — link to the GitHub repo. Use "" if none.
      icon  — OPTIONAL path to a small square image for this project
@@ -481,16 +535,35 @@
              card and as the point in Play mode. Leave "" or omit it
              entirely and the default colored dot/badge is used instead
              — nothing breaks if the file isn't there yet.
+     images — OPTIONAL array of image paths for the full post's photo
+             gallery (e.g. ["assets/projects/one-1.png", "assets/projects/one-2.png"]).
+             The first image also doubles as the post's cover photo.
+             Leave as [] if you don't have photos yet.
+     fullDesc — OPTIONAL longer write-up for the full post. Write it as
+             one string; separate paragraphs with a blank line (\n\n)
+             and each one becomes its own paragraph. Leave "" and the
+             post will just reuse `desc`.
+
+   Every project gets a "Read full post →" link (on its card, and in
+   the quick-look popup) that opens a dedicated post view with the
+   gallery and full write-up — no extra wiring needed, it's driven
+   entirely by the fields above.
+
+   Duplicate one of the objects below, edit the values, and add a
+   comma. Delete the three sample entries once you've swapped in
+   your real projects.
    ================================================================ */
 const PROJECTS = [
   {
-    name: "Project One",
-    x: 0.22, y: 0.35,
-    tags: ["Python", "Pandas", "Data Viz"],
-    desc: "Replace with a one- or two-sentence summary of what this project does and why you built it.",
-    live: "https://your-demo-link.com",
-    code: "https://github.com/your-username/your-repo",
-    icon: "" // e.g. "assets/icons/project-one.png"
+    name: "LitQuest",
+    x: 0.2, y: 0.3,
+    tags: ["MongoDB", "React", "Figma", "JavaScript"],
+    desc: "A web application and app prototype built and designed during a UIC Hackathon that transformed classic literature into interactive visual novels to aid in improving adult literacy",
+    live: "https://www.youtube.com/watch?v=nMSQqSU6TIo",
+    code: "https://github.com/LitQuestSparkHacks2026",
+    icon: "", // e.g. "assets/icons/litquest.png"
+    images: [], // e.g. ["assets/projects/litquest-1.png", "assets/projects/litquest-2.png"]
+    fullDesc: "" // longer write-up; separate paragraphs with a blank line
   },
   {
     name: "Project Two",
@@ -499,7 +572,9 @@ const PROJECTS = [
     desc: "Replace with a one- or two-sentence summary of what this project does and why you built it.",
     live: "https://your-demo-link.com",
     code: "https://github.com/your-username/your-repo",
-    icon: "" // e.g. "assets/icons/project-two.png"
+    icon: "", // e.g. "assets/icons/project-two.png"
+    images: [],
+    fullDesc: ""
   },
   {
     name: "Project Three",
@@ -508,11 +583,14 @@ const PROJECTS = [
     desc: "Replace with a one- or two-sentence summary of what this project does and why you built it.",
     live: "https://your-demo-link.com",
     code: "https://github.com/your-username/your-repo",
-    icon: "" // e.g. "assets/icons/project-three.png"
+    icon: "", // e.g. "assets/icons/project-three.png"
+    images: [],
+    fullDesc: ""
   },
 ];
 
-/* ---------- Custom art (optional) ----------*/
+/* ---------- Custom art (optional) ----------
+*/
 const CHARACTER_SRC_RIGHT = "assets/character-right.png";
 const CHARACTER_SRC_LEFT  = "assets/character-left.png";
 
@@ -527,6 +605,7 @@ function loadImg(src){
 }
 const characterImgRight = loadImg(CHARACTER_SRC_RIGHT);
 const characterImgLeft  = loadImg(CHARACTER_SRC_LEFT);
+
 
 document.getElementById('year').textContent = new Date().getFullYear();
 const fmt = (n) => String(n).padStart(2,'0');
@@ -545,8 +624,15 @@ PROJECTS.forEach((p,i)=>{
     <div class="card-links">
       <a href="${p.live}" target="_blank" rel="noopener">Live <span>↗</span></a>
       <a href="${p.code}" target="_blank" rel="noopener">Code <span>↗</span></a>
+      <a href="#" class="read-more" data-i="${i}">Read full post <span>↗</span></a>
     </div>`;
   cards.appendChild(el);
+});
+cards.addEventListener('click', e=>{
+  const link = e.target.closest('.read-more');
+  if(!link) return;
+  e.preventDefault();
+  openPost(Number(link.dataset.i));
 });
 
 /* ---------- Shared modal ---------- */
@@ -562,7 +648,8 @@ function openModal(i){
   document.getElementById('m-tags').innerHTML = p.tags.map(t=>`<span class="tag">${t}</span>`).join('');
   document.getElementById('m-links').innerHTML =
     `<a href="${p.live}" target="_blank" rel="noopener">Live <span>↗</span></a>
-     <a href="${p.code}" target="_blank" rel="noopener">Code <span>↗</span></a>`;
+     <a href="${p.code}" target="_blank" rel="noopener">Code <span>↗</span></a>
+     <a href="#" class="read-more" data-i="${i}">Read full post <span>↗</span></a>`;
   lastFocus = document.activeElement;
   modal.classList.add('on');
   document.getElementById('mClose').focus();
@@ -575,7 +662,58 @@ function closeModal(){
   if(lastFocus && lastFocus.focus) lastFocus.focus();
 }
 document.getElementById('mClose').addEventListener('click', closeModal);
-modal.addEventListener('click', e=>{ if(e.target===modal) closeModal(); });
+modal.addEventListener('click', e=>{
+  if(e.target===modal) closeModal();
+  const link = e.target.closest('.read-more');
+  if(link){ e.preventDefault(); openPost(Number(link.dataset.i)); }
+});
+
+/* ---------- Full project post ---------- */
+const post = document.getElementById('post');
+let lastFocusPost = null;
+function openPost(i){
+  const p = PROJECTS[i];
+  modal.classList.remove('on'); // don't stack the quick-look popup behind the post
+
+  const cover = document.getElementById('post-cover');
+  const coverImg = document.getElementById('post-cover-img');
+  if(p.images && p.images.length){
+    coverImg.src = p.images[0];
+    cover.style.display = 'block';
+  } else {
+    cover.style.display = 'none';
+  }
+
+  document.getElementById('post-no').textContent = `PROJECT P${fmt(i+1)}`;
+  document.getElementById('post-title').textContent = p.name;
+  document.getElementById('post-tags').innerHTML = p.tags.map(t=>`<span class="tag">${t}</span>`).join('');
+  document.getElementById('post-links').innerHTML =
+    `<a href="${p.live}" target="_blank" rel="noopener">Live <span>↗</span></a>
+     <a href="${p.code}" target="_blank" rel="noopener">Code <span>↗</span></a>`;
+
+  const text = (p.fullDesc && p.fullDesc.trim()) ? p.fullDesc : p.desc;
+  document.getElementById('post-desc').innerHTML =
+    text.split(/\n\s*\n/).map(para=>`<p>${para.trim()}</p>`).join('');
+
+  const gallery = document.getElementById('post-gallery');
+  const galleryImages = (p.images && p.images.length > 1) ? p.images.slice(1) : [];
+  gallery.innerHTML = galleryImages.map(src=>`<img src="${src}" alt="" loading="lazy" onerror="this.remove()">`).join('');
+
+  lastFocusPost = document.activeElement;
+  post.classList.add('on');
+  post.scrollTop = 0;
+  document.getElementById('postClose').focus();
+  game.paused = true;
+}
+function closePost(){
+  post.classList.remove('on');
+  game.paused = false;
+  if(playOn) canvas.focus();
+  if(lastFocusPost && lastFocusPost.focus) lastFocusPost.focus();
+}
+document.getElementById('postClose').addEventListener('click', closePost);
+document.getElementById('postBack').addEventListener('click', closePost);
+window.addEventListener('keydown', e=>{ if(e.key==='Escape' && post.classList.contains('on')) closePost(); });
 
 /* ---------- Mode toggle ---------- */
 const readEl = document.getElementById('read');
