@@ -193,6 +193,15 @@
   .card-links a:hover{text-decoration:underline}
   .card-links a span{transition:transform .18s}
   .card-links a:hover span{transform:translate(2px,-2px)}
+  .status-badge{
+    display:inline-flex;align-items:center;gap:6px;align-self:flex-start;
+    font-family:var(--mono);font-size:.68rem;font-weight:700;letter-spacing:.04em;text-transform:uppercase;
+    color:var(--c3-ink);background:color-mix(in srgb, var(--c3) 22%, var(--paper));
+    border:1px solid color-mix(in srgb, var(--c3) 40%, var(--line));
+    padding:4px 10px;border-radius:999px;
+  }
+  .status-badge::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--c3);animation:pulse-dot 1.6s ease-in-out infinite}
+  @keyframes pulse-dot{0%,100%{opacity:1}50%{opacity:.35}}
 
   /* RESUME */
   .timeline{display:flex;flex-direction:column;gap:0}
@@ -238,7 +247,7 @@
   .mute-btn{
     pointer-events:auto;appearance:none;border:1px solid #1E5A4F;background:rgba(14,50,44,.85);
     color:#DFF6EC;border-radius:8px;width:32px;height:28px;cursor:pointer;font-size:.9rem;line-height:1;
-    touch-action:manipulation;
+    touch-action:manipulation;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none;-webkit-tap-highlight-color:transparent;
   }
   .mute-btn:hover{border-color:var(--amber)}
 
@@ -273,13 +282,13 @@
 
   /* touch controls */
   .pad{position:absolute;left:18px;bottom:calc(20px + env(safe-area-inset-bottom));display:grid;grid-template-columns:repeat(3,52px);grid-template-rows:repeat(3,52px);gap:6px}
-  .pad button{appearance:none;border:1px solid #1E5A4F;background:rgba(14,50,44,.85);color:#DFF6EC;border-radius:12px;font-size:1.2rem;cursor:pointer;display:flex;align-items:center;justify-content:center;user-select:none;touch-action:none}
+  .pad button{appearance:none;border:1px solid #1E5A4F;background:rgba(14,50,44,.85);color:#DFF6EC;border-radius:12px;font-size:1.2rem;cursor:pointer;display:flex;align-items:center;justify-content:center;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none;-webkit-tap-highlight-color:transparent;touch-action:none}
   .pad button:active{background:var(--cobalt);color:#fff}
   .pad .up{grid-column:2;grid-row:1}
   .pad .left{grid-column:1;grid-row:2}
   .pad .right{grid-column:3;grid-row:2}
   .pad .down{grid-column:2;grid-row:3}
-  .act{position:absolute;right:22px;bottom:calc(34px + env(safe-area-inset-bottom));width:72px;height:72px;border-radius:50%;border:0;background:var(--amber);color:var(--ink);font-family:var(--mono);font-weight:700;font-size:.8rem;cursor:pointer;box-shadow:0 8px 24px -8px rgba(255,201,143,.7);touch-action:none}
+  .act{position:absolute;right:22px;bottom:calc(34px + env(safe-area-inset-bottom));width:72px;height:72px;border-radius:50%;border:0;background:var(--amber);color:var(--ink);font-family:var(--mono);font-weight:700;font-size:.8rem;cursor:pointer;box-shadow:0 8px 24px -8px rgba(255,201,143,.7);user-select:none;-webkit-user-select:none;-webkit-touch-callout:none;-webkit-tap-highlight-color:transparent;touch-action:none}
   .act:active{transform:scale(.94)}
   .pad,.act{display:none}
   body.touch .pad,body.touch .act{display:grid}
@@ -304,6 +313,7 @@
   .sheet .close:hover{border-color:var(--ink);color:var(--ink)}
   .sheet .m-no{font-family:var(--mono);font-size:.74rem;color:var(--cobalt)}
   .sheet h3{font-family:var(--display);font-weight:700;font-size:1.7rem;letter-spacing:-.015em;margin:6px 0 12px}
+  .m-date{font-family:var(--mono);font-size:.78rem;color:var(--slate);margin-top:-6px;margin-bottom:12px}
   .sheet p{color:var(--slate);margin-bottom:16px}
   .sheet .tags{margin-bottom:18px}
 
@@ -420,9 +430,16 @@
     </div>
   </section>
 
+  <section class="block" id="in-progress">
+    <div class="wrap">
+      <div class="sec-head"><h2>In progress</h2><span class="sec-no">// 03</span></div>
+      <div class="grid" id="progress-cards"><!-- injected from IN_PROGRESS --></div>
+    </div>
+  </section>
+
   <section class="block" id="resume">
   <div class="wrap">
-    <div class="sec-head"><h2>Resume</h2><span class="sec-no">// 03</span></div>
+    <div class="sec-head"><h2>Resume</h2><span class="sec-no">// 04</span></div>
 
     <div class="timeline">
       <div class="tl">
@@ -440,10 +457,20 @@
 
       <!-- Internship as its own row -->
       <div class="tl">
-        <div class="when">Current</div>
+        <div class="when">Completed</div>
         <div>
           <h4>Quantum AI/ML Intern</h4>
           <div class="where">Q-NEXT @ Argonne National Laboratory</div>
+          <p>FIXME: Description here</p>
+        </div>
+      </div>
+
+      <!-- New position — fill in the placeholders below -->
+      <div class="tl">
+        <div class="when">FIXME: dates</div>
+        <div>
+          <h4>FIXME: Job title</h4>
+          <div class="where">FIXME: Organization</div>
           <p>FIXME: Description here</p>
         </div>
       </div>
@@ -459,7 +486,7 @@
 
   <section class="block" id="contact">
     <div class="wrap">
-      <div class="sec-head"><h2>Contact</h2><span class="sec-no">// 04</span></div>
+      <div class="sec-head"><h2>Contact</h2><span class="sec-no">// 05</span></div>
       <div class="contact">
         <p class="big">Got a role, a dataset, or an idea? <a href="mailto:alexandra.med24@gmail.com">alexandra.med24@gmail.com</a></p>
         <div class="links-row">
@@ -525,6 +552,7 @@
     <img class="card-icon" id="m-icon" src="" alt="" style="display:none;margin-bottom:10px" onerror="this.style.display='none'">
     <div class="m-no" id="m-no"></div>
     <h3 id="m-title"></h3>
+    <div class="m-date" id="m-date"></div>
     <p id="m-desc"></p>
     <div class="tags" id="m-tags"></div>
     <div class="card-links" id="m-links"></div>
@@ -544,6 +572,7 @@
     <div class="post-body wrap">
       <div class="post-no" id="post-no"></div>
       <h2 id="post-title"></h2>
+      <div class="m-date" id="post-date"></div>
       <div class="tags" id="post-tags"></div>
       <div class="post-links" id="post-links"></div>
       <div class="post-desc" id="post-desc"></div>
@@ -646,6 +675,29 @@ const PROJECTS = [
   },
 ];
 
+/* ================================================================
+   IN_PROGRESS — things you're actively building, shown in their own
+   "In progress" section on the reading side (not part of the game).
+   FIELDS
+     name — project title
+     desc — a sentence or two on what it is / where it's headed
+     tags — array of short strings, same colorful chips as PROJECTS
+     status — short text shown as a pulsing badge, e.g. "Started March 2026"
+     live, code — OPTIONAL links, e.g. an early demo or public repo.
+             Leave "" to hide that link entirely.
+   Delete the placeholder entry once you add a real one.
+   ================================================================ */
+const IN_PROGRESS = [
+  {
+    name: "Your next project",
+    desc: "Replace with a sentence or two about what you're currently building.",
+    tags: ["Tag", "Tag"],
+    status: "In progress",
+    live: "",
+    code: ""
+  },
+];
+
 /* ---------- Custom art (optional) ----------
 */
 const CHARACTER_SRC_RIGHT = "assets/character-right.png";
@@ -691,6 +743,24 @@ cards.addEventListener('click', e=>{
   openPost(Number(link.dataset.i));
 });
 
+/* ---------- Build READ-mode In Progress cards ---------- */
+const progressCards = document.getElementById('progress-cards');
+IN_PROGRESS.forEach(p=>{
+  const el = document.createElement('article');
+  el.className = 'card';
+  const links = [
+    p.live ? `<a href="${p.live}" target="_blank" rel="noopener">Live <span>↗</span></a>` : '',
+    p.code ? `<a href="${p.code}" target="_blank" rel="noopener">Code <span>↗</span></a>` : '',
+  ].filter(Boolean).join('');
+  el.innerHTML = `
+    <span class="status-badge">${p.status || 'In progress'}</span>
+    <h3>${p.name}</h3>
+    <p>${p.desc}</p>
+    <div class="tags">${p.tags.map(t=>`<span class="tag">${t}</span>`).join('')}</div>
+    ${links ? `<div class="card-links">${links}</div>` : ''}`;
+  progressCards.appendChild(el);
+});
+
 /* ---------- Shared modal ---------- */
 const modal = document.getElementById('modal');
 let lastFocus = null;
@@ -700,6 +770,7 @@ function openModal(i){
   if(p.icon){ mIcon.src = p.icon; mIcon.style.display = 'block'; } else { mIcon.style.display = 'none'; }
   document.getElementById('m-no').textContent = `PROJECT P${fmt(i+1)}`;
   document.getElementById('m-title').textContent = p.name;
+  document.getElementById('m-date').textContent = formatDateValue(dateValue(p));
   document.getElementById('m-desc').textContent = p.desc;
   document.getElementById('m-tags').innerHTML = p.tags.map(t=>`<span class="tag">${t}</span>`).join('');
   document.getElementById('m-links').innerHTML =
@@ -742,6 +813,7 @@ function openPost(i){
 
   document.getElementById('post-no').textContent = `PROJECT P${fmt(i+1)}`;
   document.getElementById('post-title').textContent = p.name;
+  document.getElementById('post-date').textContent = formatDateValue(dateValue(p));
   document.getElementById('post-tags').innerHTML = p.tags.map(t=>`<span class="tag">${t}</span>`).join('');
   document.getElementById('post-links').innerHTML =
     `<a href="${p.live}" target="_blank" rel="noopener">Live <span>↗</span></a>
@@ -830,6 +902,13 @@ function dateValue(p){
     }
   }
   return null;
+}
+const MONTH_NAMES = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+function formatDateValue(v){
+  if(typeof v !== 'number') return '';
+  const year = Math.floor(v);
+  const monthIndex = Math.round((v-year)*12); // 0-11
+  return monthIndex===0 ? String(year) : `${MONTH_NAMES[monthIndex]} ${year}`;
 }
 const DATE_VALUES = PROJECTS.map(dateValue).filter(v=>typeof v==='number');
 const YEAR_MIN = DATE_VALUES.length ? Math.floor(Math.min(...DATE_VALUES)) : 0;
