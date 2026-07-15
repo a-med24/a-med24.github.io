@@ -233,6 +233,32 @@
   .hud-box .progress{color:#fff;font-size:.92rem}
   .hud-help{text-align:right;color:#8FCBBB;max-width:200px}
   .hud-help kbd{background:#0E322C;color:#DFF6EC;padding:2px 7px;border-radius:5px;border:1px solid #1E5A4F}
+  .hud-right{display:flex;flex-direction:column;align-items:flex-end;gap:8px;pointer-events:none}
+  .mute-btn{
+    pointer-events:auto;appearance:none;border:1px solid #1E5A4F;background:rgba(14,50,44,.85);
+    color:#DFF6EC;border-radius:8px;width:32px;height:28px;cursor:pointer;font-size:.9rem;line-height:1;
+  }
+  .mute-btn:hover{border-color:var(--amber)}
+
+  /* objectives checklist */
+  .objectives{margin-top:8px;display:flex;flex-direction:column;gap:3px;max-width:220px}
+  .obj-item{display:flex;align-items:center;gap:7px;font-size:.74rem;color:#8FCBBB;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .obj-item .dot{width:7px;height:7px;border-radius:50%;border:1.5px solid #4FAE9C;flex:none}
+  .obj-item.done{color:#DFF6EC}
+  .obj-item.done .dot{background:var(--amber);border-color:var(--amber)}
+
+  /* toast notifications */
+  .toast{
+    position:absolute;left:50%;top:70px;transform:translateX(-50%) translateY(-8px);
+    display:flex;flex-direction:column;gap:8px;align-items:center;pointer-events:none;z-index:6;
+  }
+  .toast-item{
+    font-family:var(--mono);font-size:.8rem;font-weight:700;color:var(--ink);
+    background:var(--amber);padding:9px 16px;border-radius:999px;
+    opacity:0;transform:translateY(-6px);transition:opacity .25s, transform .25s;
+    box-shadow:0 8px 24px -8px rgba(255,201,143,.6);white-space:nowrap;
+  }
+  .toast-item.on{opacity:1;transform:translateY(0)}
 
   .prompt{
     position:absolute;left:50%;bottom:118px;transform:translateX(-50%) translateY(8px);
@@ -262,7 +288,9 @@
   .win.on{opacity:1;transform:translate(-50%,-50%) scale(1);pointer-events:auto}
   .win h3{font-family:var(--display);font-size:1.5rem;margin-bottom:8px}
   .win p{color:var(--slate);font-size:.95rem;margin-bottom:18px}
+  .win-btns{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
   .win button{appearance:none;border:0;cursor:pointer;font-family:var(--mono);font-weight:700;font-size:.8rem;background:var(--cobalt);color:#fff;padding:11px 20px;border-radius:999px}
+  .win button#winBack{background:var(--paper-2);color:var(--ink);border:1px solid var(--line)}
 
   /* ============================================================
      SHARED MODAL (used by both modes)
@@ -312,6 +340,8 @@
     .about-grid{grid-template-columns:1fr}
     .tl{grid-template-columns:1fr;gap:4px}
     .hud-help{display:none}
+    .objectives{max-width:130px}
+    .obj-item{font-size:.68rem}
     .post-cover{max-height:260px}
     .post-cover img{max-height:260px}
   }
@@ -452,12 +482,19 @@
       <div class="hud-box">
         <div><span class="k">DATA EXPLORER</span></div>
         <div class="progress">Collected <span id="count">0</span> / <span id="total">0</span> projects</div>
+        <div class="progress" id="timer">Time <span class="k" id="timerVal">0:00</span></div>
+        <div class="objectives" id="objectives"><!-- injected: checklist of project names --></div>
       </div>
-      <div class="hud-box hud-help">
-        Move <kbd>↑</kbd><kbd>↓</kbd><kbd>←</kbd><kbd>→</kbd> / <kbd>WASD</kbd><br>
-        Open a point <kbd>E</kbd> / <kbd>Enter</kbd>
+      <div class="hud-right">
+        <button class="mute-btn" id="muteBtn" aria-label="Toggle sound">🔊</button>
+        <div class="hud-box hud-help">
+          Move <kbd>↑</kbd><kbd>↓</kbd><kbd>←</kbd><kbd>→</kbd> / <kbd>WASD</kbd><br>
+          Open a point <kbd>E</kbd> / <kbd>Enter</kbd><br>
+          Find keys to unlock earlier years
+        </div>
       </div>
     </div>
+    <div class="toast" id="toast"></div>
     <div class="prompt" id="prompt">Press E to open</div>
 
     <div class="pad" aria-hidden="true">
@@ -470,8 +507,11 @@
 
     <div class="win" id="win">
       <h3>All points collected ✦</h3>
-      <p>You walked the whole dataset. Nicely done — now go read the details.</p>
-      <button id="winBack">Back to reading</button>
+      <p id="winTime">You walked the whole dataset. Nicely done — now go read the details.</p>
+      <div class="win-btns">
+        <button id="winAgain">Play again</button>
+        <button id="winBack">Back to reading</button>
+      </div>
     </div>
   </div>
 </main>
@@ -520,10 +560,22 @@
 
    FIELDS
      name  — short project title, shown on the card and in-game
-     x, y  — position of this project's point on the game canvas,
-             as a fraction from 0 to 1 (0,0 = top-left, 1,1 =
-             bottom-right). Spread these out so points don't overlap,
-             e.g. x:0.2/0.5/0.8 for three columns.
+     date  — when you built this. Either a plain year (2026), or a
+             "YYYY-MM" string (e.g. "2026-03") if you want month
+             precision. This is what positions the point vertically on
+             the game canvas's timeline — projects automatically sort
+             chronologically and land earlier/later than each other
+             based on the exact date. If more than one project lands
+             on the exact same date, they nudge apart slightly so they
+             don't sit exactly on top of one another.
+     x     — OPTIONAL horizontal placement, 0 to 1 (left to right).
+             Purely for visual arrangement — it has no effect on
+             chronology. Leave it out for a centered default (0.5), or
+             set it per project to stagger points left/right however
+             looks good. It's automatically kept within a safe middle
+             band, so no matter what you set it to, a point can never
+             visually drift into another year's row — only `date`
+             controls which row a project appears in.
      tags  — array of short strings (languages, tools, topics).
              Colors cycle automatically — no styling needed.
      desc  — one or two sentences on what it does / why it matters.
@@ -550,13 +602,14 @@
    entirely by the fields above.
 
    Duplicate one of the objects below, edit the values, and add a
-   comma. Delete the three sample entries once you've swapped in
+   comma. Delete the two placeholder entries once you've swapped in
    your real projects.
    ================================================================ */
 const PROJECTS = [
   {
     name: "LitQuest",
-    x: 0.2, y: 0.3,
+    date: "2026-03", // e.g. "2026-03" for March 2026 — try changing the month
+    x: 0.42, // design placement, 0-1 left-to-right — purely visual
     tags: ["MongoDB", "React", "Figma", "JavaScript"],
     desc: "A web application and app prototype built and designed during a UIC Hackathon that transformed classic literature into interactive visual novels to aid in improving adult literacy",
     live: "https://www.youtube.com/watch?v=nMSQqSU6TIo",
@@ -567,7 +620,8 @@ const PROJECTS = [
   },
   {
     name: "Project Two",
-    x: 0.5, y: 0.62,
+    date: 2025, // plain year is fine too — treated as January
+    x: 0.64,
     tags: ["JavaScript", "React", "API"],
     desc: "Replace with a one- or two-sentence summary of what this project does and why you built it.",
     live: "https://your-demo-link.com",
@@ -577,13 +631,14 @@ const PROJECTS = [
     fullDesc: ""
   },
   {
-    name: "Project Three",
-    x: 0.78, y: 0.3,
-    tags: ["R", "Statistics", "Research"],
-    desc: "Replace with a one- or two-sentence summary of what this project does and why you built it.",
-    live: "https://your-demo-link.com",
-    code: "https://github.com/your-username/your-repo",
-    icon: "", // e.g. "assets/icons/project-three.png"
+    name: "Music Recommendation App",
+    date: "2024-03", // "Spring 2024" — using March as a representative month
+    x: 0.5,
+    tags: ["JavaScript", "Database Management", "Data Filtering"],
+    desc: "First application created for my AP Computer Science Principles course in which I utilized JavaScript on Code.org to make a Music Recommendation app. Users could select a music genre and song duration, the navigate to the next screen where they would be displayed a song name, artist, and album cover along with additional songs if another button was pressed.",
+    live: "https://youtu.be/fV_ooA1ZtJ0",
+    code: "https://github.com/a-med24/Music-Recommendation",
+    icon: "",
     images: [],
     fullDesc: ""
   },
@@ -605,7 +660,6 @@ function loadImg(src){
 }
 const characterImgRight = loadImg(CHARACTER_SRC_RIGHT);
 const characterImgLeft  = loadImg(CHARACTER_SRC_LEFT);
-
 
 document.getElementById('year').textContent = new Date().getFullYear();
 const fmt = (n) => String(n).padStart(2,'0');
@@ -732,7 +786,13 @@ function setMode(play){
   tabPlay.classList.toggle('on', play);
   tabRead.setAttribute('aria-selected', String(!play));
   tabPlay.setAttribute('aria-selected', String(play));
-  if(play){ resize(); canvas.focus(); game.paused=false; loop(); }
+  if(play){
+    resize(); canvas.focus(); game.paused=false;
+    if(game.visitedCount===0){ game.runTime=0; }
+    if(game.visitedCount < stations.length){ game.running = true; }
+    else { game.running = false; game.paused = true; document.getElementById('win').classList.add('on'); }
+    loop();
+  }
 }
 tabRead.addEventListener('click', ()=>setMode(false));
 tabPlay.addEventListener('click', ()=>setMode(true));
@@ -748,12 +808,186 @@ const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').match
 if('ontouchstart' in window || navigator.maxTouchPoints>0) document.body.classList.add('touch');
 
 let W=0, H=0, dpr=1;
-const stations = PROJECTS.map((p,i)=>({ i, fx:p.x, fy:p.y, px:0, py:0, visited:false, iconImg: loadImg(p.icon) }));
+// The canvas is a vertical timeline: y is derived from each project's
+// date, not set by hand. A plain year (2026) or a "YYYY-MM" string
+// ("2026-03") both work — month precision positions the point
+// proportionally between that year and the next, so it automatically
+// lands earlier or later than other projects with no manual y needed.
+function dateValue(p){
+  const d = p.date != null ? p.date : p.year; // p.year kept for backwards compat
+  if(typeof d === 'number') return d;
+  if(typeof d === 'string'){
+    const m = d.match(/^(\d{4})(?:-(\d{1,2}))?$/);
+    if(m){
+      const y = parseInt(m[1],10);
+      const mo = m[2] ? parseInt(m[2],10) : 1;
+      return y + (Math.min(Math.max(mo,1),12)-1)/12;
+    }
+  }
+  return null;
+}
+const DATE_VALUES = PROJECTS.map(dateValue).filter(v=>typeof v==='number');
+const YEAR_MIN = DATE_VALUES.length ? Math.floor(Math.min(...DATE_VALUES)) : 0;
+const YEAR_MAX = DATE_VALUES.length ? Math.max(Math.ceil(Math.max(...DATE_VALUES)), YEAR_MIN+1) : 1;
+const YEAR_PAD = 0.1; // keep the earliest/latest date off the very edge
+function yFromDate(value){
+  if(typeof value !== 'number') return 0.5;
+  const t = (value - YEAR_MIN) / (YEAR_MAX - YEAR_MIN);
+  return YEAR_PAD + t * (1 - YEAR_PAD*2);
+}
+// x is free for design — set it per project, 0 to 1, to arrange points
+// left/right however looks good. It's clamped to a safe band around the
+// center so a project can never visually drift up into the row above it
+// or down into the row below, no matter how the rest of the layout
+// changes — x only ever moves sideways, never blurs the year it belongs to.
+const STATION_X_DEFAULT = 0.5;
+const STATION_X_MIN = 0.14, STATION_X_MAX = 0.86;
+function clampX(x){
+  const v = (typeof x === 'number') ? x : STATION_X_DEFAULT;
+  return Math.min(STATION_X_MAX, Math.max(STATION_X_MIN, v));
+}
+// If more than one project lands on the exact same date, nudge them
+// apart slightly left/right so they don't sit exactly on top of each other.
+const STATION_X_NUDGE = 0.03;
+const dateGroups = {};
+PROJECTS.forEach((p,i)=>{ const k=dateValue(p); (dateGroups[k] = dateGroups[k] || []).push(i); });
+const stations = PROJECTS.map((p,i)=>{
+  const v = dateValue(p);
+  const group = dateGroups[v];
+  const slot = group.indexOf(i);
+  const fx = clampX(clampX(p.x) + (slot - (group.length-1)/2) * STATION_X_NUDGE);
+  return { i, fx, fy:yFromDate(v), px:0, py:0, visited:false, iconImg: loadImg(p.icon), date:v };
+});
+
+// one gridline per whole year spanning the full range, so the canvas
+// reads as a continuous ruler rather than only marking years with data
+const TIMELINE_YEARS = [];
+for(let y=YEAR_MIN; y<=YEAR_MAX; y++) TIMELINE_YEARS.push(y);
+
+/* ---------- Year unlocking ----------
+   The character starts at the most recent year. Everything earlier is
+   locked behind a barrier — walk up to it, find the glowing key
+   somewhere in the area you already have access to, and grabbing it
+   unlocks the next year back, moving the barrier further up. Keeps
+   unlocking one year at a time until the earliest year is reached.
+*/
+const PROJECT_YEARS = [...new Set(stations.map(s=>Math.floor(s.date)))].sort((a,b)=>a-b);
+const UNLOCK_ORDER = PROJECT_YEARS.slice().reverse(); // latest first — matches where the player starts
+const START_YEAR = UNLOCK_ORDER[0];
+const ROW_MARGIN = 0.08;
+function frontierTopY(unlockIndex){
+  // how far up (toward earlier years) the player can currently roam
+  if(unlockIndex >= UNLOCK_ORDER.length-1) return 0; // every year unlocked
+  return Math.max(0, yFromDate(UNLOCK_ORDER[unlockIndex]) - ROW_MARGIN);
+}
+function keyPositionFor(unlockIndex){
+  // the key that unlocks the NEXT year sits within the area already
+  // reachable — i.e. in the row of the current frontier year
+  const year = UNLOCK_ORDER[unlockIndex];
+  const fx = 0.5 + (unlockIndex % 2 === 0 ? -0.2 : 0.2);
+  return { fx, fy: yFromDate(year), targetYear: UNLOCK_ORDER[unlockIndex+1] };
+}
+
+/* ---------- Obstacles (optional) ----------
+   Simple static barriers on the canvas that block the player so
+   getting around takes a little navigation, not just a straight walk.
+   All positions are fractions of the canvas (0 to 1), so they hold up
+   at any screen size.
+   fx,fy — center of the obstacle
+   fw,fh — width/height
+   Add, remove, or reposition these freely.
+*/
+const OBSTACLES = [
+  { fx:0.30, fy:0.42, fw:0.13, fh:0.045 },
+];
+function obstacleRect(o){
+  const cx = o.fx*W, cy = o.fy*H;
+  const w = o.fw*W, h = o.fh*H;
+  return { x0:cx-w/2, y0:cy-h/2, x1:cx+w/2, y1:cy+h/2, cx, cy, w, h };
+}
+
+/* ---------- Sound (lightweight, no audio files needed) ----------
+   Short synthesized tones via the Web Audio API. Browsers block audio
+   until a real user gesture, so the AudioContext is created lazily on
+   first key press / click rather than on page load.
+*/
+let audioCtx = null;
+let soundOn = localStorage.getItem('dx_sound') !== 'off';
+function ensureAudio(){
+  if(!audioCtx){ try{ audioCtx = new (window.AudioContext||window.webkitAudioContext)(); }catch(e){} }
+  if(audioCtx && audioCtx.state==='suspended') audioCtx.resume();
+}
+function beep(freq,dur,type,vol,delay){
+  if(!soundOn || !audioCtx) return;
+  const t0 = audioCtx.currentTime + (delay||0);
+  const osc = audioCtx.createOscillator(), gain = audioCtx.createGain();
+  osc.type = type||'sine'; osc.frequency.setValueAtTime(freq, t0);
+  gain.gain.setValueAtTime(0, t0);
+  gain.gain.linearRampToValueAtTime(vol||0.15, t0+0.01);
+  gain.gain.exponentialRampToValueAtTime(0.0001, t0+dur);
+  osc.connect(gain); gain.connect(audioCtx.destination);
+  osc.start(t0); osc.stop(t0+dur+0.03);
+}
+const sfx = {
+  interact: ()=>beep(660,.12,'triangle',.16),
+  collect: ()=>{ beep(523.25,.09,'square',.13); beep(783.99,.13,'square',.13,.09); },
+  bump: ()=>beep(110,.09,'sawtooth',.11),
+  key: ()=>{ beep(783.99,.08,'triangle',.16); beep(1046.5,.1,'triangle',.16,.08); beep(1318.5,.14,'triangle',.16,.16); },
+  win: ()=>[523.25,659.25,783.99,1046.5].forEach((f,i)=>beep(f,.16,'triangle',.15,i*.12)),
+};
+const muteBtn = document.getElementById('muteBtn');
+function syncMuteBtn(){ muteBtn.textContent = soundOn ? '🔊' : '🔇'; }
+syncMuteBtn();
+muteBtn.addEventListener('click', ()=>{
+  soundOn = !soundOn;
+  localStorage.setItem('dx_sound', soundOn ? 'on' : 'off');
+  syncMuteBtn();
+  if(soundOn){ ensureAudio(); beep(660,.08,'triangle',.15); }
+});
+
+/* ---------- Toast notifications ---------- */
+const toastEl = document.getElementById('toast');
+function toast(msg){
+  const el = document.createElement('div');
+  el.className = 'toast-item';
+  el.textContent = msg;
+  toastEl.appendChild(el);
+  requestAnimationFrame(()=>el.classList.add('on'));
+  setTimeout(()=>{ el.classList.remove('on'); setTimeout(()=>el.remove(), 300); }, 2200);
+}
+
 const game = {
-  player:{ fx:0.5, fy:0.6, px:0, py:0, r:13, facing:'right' },
+  player:{ fx:0.5, fy:yFromDate(START_YEAR), px:0, py:0, r:13, facing:'right' },
   paused:false, t:0, active:-1, visitedCount:0,
+  runTime:0, running:false,
+  particles:[], shakeUntil:0, shakeMag:0,
+  unlockIndex:0, key:null,
 };
 document.getElementById('total').textContent = stations.length;
+
+function spawnKey(){
+  if(game.unlockIndex >= UNLOCK_ORDER.length-1){ game.key = null; return; } // all years unlocked
+  const k = keyPositionFor(game.unlockIndex);
+  game.key = { fx:k.fx, fy:k.fy, px:0, py:0, targetYear:k.targetYear };
+  if(W) { game.key.px = k.fx*W; game.key.py = k.fy*H; }
+}
+spawnKey();
+const BEST_KEY = 'dx_best_time';
+
+function fmtTime(sec){
+  sec = Math.max(0, sec);
+  const m = Math.floor(sec/60), s = Math.floor(sec%60);
+  return `${m}:${String(s).padStart(2,'0')}`;
+}
+
+/* ---------- Objectives checklist ---------- */
+const objectivesEl = document.getElementById('objectives');
+function renderObjectives(){
+  objectivesEl.innerHTML = stations.map(s=>
+    `<div class="obj-item${s.visited?' done':''}"><span class="dot"></span>${PROJECTS[s.i].name}</div>`
+  ).join('');
+}
+renderObjectives();
 
 function resize(){
   const rect = canvas.getBoundingClientRect();
@@ -763,6 +997,7 @@ function resize(){
   canvas.height = Math.floor(H*dpr);
   ctx.setTransform(dpr,0,0,dpr,0,0);
   stations.forEach(s=>{ s.px=s.fx*W; s.py=s.fy*H; });
+  if(game.key){ game.key.px = game.key.fx*W; game.key.py = game.key.fy*H; }
   game.player.px = game.player.fx*W;
   game.player.py = game.player.fy*H;
 }
@@ -771,10 +1006,13 @@ window.addEventListener('resize', ()=>{ if(playOn) resize(); });
 /* input */
 const keys = {};
 const KEYMAP = {ArrowUp:'up',ArrowDown:'down',ArrowLeft:'left',ArrowRight:'right',w:'up',s:'down',a:'left',d:'right',W:'up',S:'down',A:'left',D:'right'};
+const winEl = document.getElementById('win');
+function inputBlocked(){ return modal.classList.contains('on') || winEl.classList.contains('on'); }
 window.addEventListener('keydown', e=>{
   if(!playOn) return;
   if(modal.classList.contains('on')){ if(e.key==='Escape') closeModal(); return; }
-  if(KEYMAP[e.key]){ keys[KEYMAP[e.key]]=true; e.preventDefault(); }
+  if(winEl.classList.contains('on')) return;
+  if(KEYMAP[e.key]){ keys[KEYMAP[e.key]]=true; e.preventDefault(); ensureAudio(); }
   if((e.key==='e'||e.key==='E'||e.key==='Enter'||e.key===' ') && game.active>=0){ e.preventDefault(); interact(); }
 });
 window.addEventListener('keyup', e=>{ if(KEYMAP[e.key]){ keys[KEYMAP[e.key]]=false; e.preventDefault(); } });
@@ -782,30 +1020,82 @@ window.addEventListener('keyup', e=>{ if(KEYMAP[e.key]){ keys[KEYMAP[e.key]]=fal
 /* touch pad */
 document.querySelectorAll('.pad button').forEach(b=>{
   const dir=b.dataset.dir;
-  const on=e=>{e.preventDefault();keys[dir]=true;};
+  const on=e=>{ if(inputBlocked()) return; e.preventDefault();keys[dir]=true;ensureAudio();};
   const off=e=>{e.preventDefault();keys[dir]=false;};
   b.addEventListener('pointerdown',on); b.addEventListener('pointerup',off);
   b.addEventListener('pointerleave',off); b.addEventListener('pointercancel',off);
 });
-document.getElementById('actBtn').addEventListener('click', ()=>{ if(game.active>=0) interact(); });
+document.getElementById('actBtn').addEventListener('click', ()=>{ if(!inputBlocked() && game.active>=0) interact(); });
 
 /* click a point to open it */
 canvas.addEventListener('click', e=>{
+  if(inputBlocked()) return;
+  ensureAudio();
   const rect=canvas.getBoundingClientRect();
   const mx=e.clientX-rect.left, my=e.clientY-rect.top;
   let best=-1,bd=1e9;
   stations.forEach(s=>{ const d=Math.hypot(s.px-mx,s.py-my); if(d<bd){bd=d;best=s.i;} });
-  if(best>=0 && bd<34){ markVisited(best); openModal(best); }
+  if(best>=0 && bd<34){ sfx.interact(); markVisited(best); openModal(best); }
 });
 
-function interact(){ if(game.active>=0){ markVisited(game.active); openModal(game.active); } }
+function spawnParticles(x,y,color){
+  for(let k=0;k<10;k++){
+    const a = (k/10)*Math.PI*2 + Math.random()*0.4;
+    const sp = 60+Math.random()*70;
+    game.particles.push({ x,y, vx:Math.cos(a)*sp, vy:Math.sin(a)*sp, life:0.55, age:0, color });
+  }
+}
+function interact(){
+  if(inputBlocked()) return;
+  if(game.active>=0){ ensureAudio(); sfx.interact(); markVisited(game.active); openModal(game.active); }
+}
 function markVisited(i){
   const s=stations[i];
-  if(!s.visited){ s.visited=true; game.visitedCount++; document.getElementById('count').textContent=game.visitedCount;
-    if(game.visitedCount===stations.length) showWin(); }
+  if(!s.visited){
+    s.visited=true; game.visitedCount++;
+    document.getElementById('count').textContent=game.visitedCount;
+    renderObjectives();
+    spawnParticles(s.px, s.py, '#FFC98F');
+    sfx.collect();
+    toast(game.visitedCount===1 ? `First stop: ${PROJECTS[i].name}` : `Collected: ${PROJECTS[i].name}`);
+    if(game.visitedCount===stations.length) showWin();
+  }
 }
-function showWin(){ document.getElementById('win').classList.add('on'); }
-document.getElementById('winBack').addEventListener('click', ()=>{ document.getElementById('win').classList.remove('on'); setMode(false); });
+function showWin(){
+  game.running = false;
+  game.paused = true;
+  const finalTime = game.runTime;
+  const best = parseFloat(localStorage.getItem(BEST_KEY));
+  let isNewBest = false;
+  if(!best || finalTime < best){ localStorage.setItem(BEST_KEY, String(finalTime)); isNewBest = true; }
+  document.getElementById('winTime').textContent = isNewBest
+    ? `New best time: ${fmtTime(finalTime)} 🏆`
+    : `Your time: ${fmtTime(finalTime)} — best: ${fmtTime(best)}`;
+  sfx.win();
+  toast('All projects collected!');
+  winEl.classList.add('on');
+}
+function resetRun(){
+  stations.forEach(s=>{ s.visited=false; });
+  game.visitedCount = 0;
+  game.runTime = 0;
+  game.running = true;
+  game.paused = false;
+  game.active = -1;
+  game.particles = [];
+  game.shakeUntil = 0;
+  game.unlockIndex = 0;
+  spawnKey();
+  game.player.fx = 0.5; game.player.fy = yFromDate(START_YEAR);
+  game.player.px = game.player.fx*W; game.player.py = game.player.fy*H;
+  game.player.facing = 'right';
+  document.getElementById('count').textContent = 0;
+  document.getElementById('timerVal').textContent = fmtTime(0);
+  document.getElementById('prompt').classList.remove('on');
+  renderObjectives();
+}
+document.getElementById('winBack').addEventListener('click', ()=>{ winEl.classList.remove('on'); game.paused=false; setMode(false); });
+document.getElementById('winAgain').addEventListener('click', ()=>{ winEl.classList.remove('on'); resetRun(); canvas.focus(); });
 
 const INTERACT=54, SPEED=235;
 let lastT=0;
@@ -817,16 +1107,52 @@ function loop(ts){
   draw();
   requestAnimationFrame(loop);
 }
+function circleHitsRect(px,py,r,rect){
+  const cx = Math.max(rect.x0, Math.min(px, rect.x1));
+  const cy = Math.max(rect.y0, Math.min(py, rect.y1));
+  const dx = px-cx, dy = py-cy;
+  return (dx*dx+dy*dy) < r*r;
+}
+function bumpEffect(){
+  if(game.t - (game.lastBump||0) < 0.35) return;
+  game.lastBump = game.t;
+  ensureAudio(); sfx.bump();
+  game.shakeUntil = game.t + 0.22;
+  game.shakeMag = 6;
+}
+function collectKey(){
+  if(!game.key) return;
+  const targetYear = game.key.targetYear;
+  game.unlockIndex++;
+  spawnKey();
+  ensureAudio(); sfx.key();
+  spawnParticles(game.player.px, game.player.py, '#2FC4B4');
+  toast(`Key found — ${targetYear} unlocked!`);
+}
 function update(dt){
   let vx=0, vy=0;
   if(keys.up)vy-=1; if(keys.down)vy+=1; if(keys.left)vx-=1; if(keys.right)vx+=1;
-  if(vx||vy){ const m=Math.hypot(vx,vy)||1; vx/=m; vy/=m;
-    game.player.px=Math.max(16,Math.min(W-16, game.player.px+vx*SPEED*dt));
-    game.player.py=Math.max(16,Math.min(H-16, game.player.py+vy*SPEED*dt));
+  const topLimit = frontierTopY(game.unlockIndex)*H;
+  if(vx||vy){
+    const m=Math.hypot(vx,vy)||1; vx/=m; vy/=m;
+    const r = game.player.r;
+    const rects = OBSTACLES.map(o=>obstacleRect(o));
+    let nx = Math.max(16,Math.min(W-16, game.player.px+vx*SPEED*dt));
+    if(!rects.some(rect=>circleHitsRect(nx, game.player.py, r, rect))) game.player.px = nx;
+    else if(vx) bumpEffect();
+    let ny = Math.max(16,Math.min(H-16, game.player.py+vy*SPEED*dt));
+    if(ny < topLimit){ ny = topLimit; if(vy<0) bumpEffect(); }
+    if(!rects.some(rect=>circleHitsRect(game.player.px, ny, r, rect))) game.player.py = ny;
+    else if(vy) bumpEffect();
   }
   // face left/right based on horizontal movement; keep last facing on pure vertical moves
   if(vx<0) game.player.facing='left';
   else if(vx>0) game.player.facing='right';
+
+  if(game.key && Math.hypot(game.key.px-game.player.px, game.key.py-game.player.py) < 30){
+    collectKey();
+  }
+
   // nearest station
   let best=-1, bd=1e9;
   stations.forEach(s=>{ const d=Math.hypot(s.px-game.player.px, s.py-game.player.py); if(d<bd){bd=d;best=s.i;} });
@@ -834,10 +1160,24 @@ function update(dt){
   const prompt=document.getElementById('prompt');
   if(game.active>=0){ prompt.textContent=`▸ ${PROJECTS[game.active].name} — press E`; prompt.classList.add('on'); }
   else prompt.classList.remove('on');
+
+  if(game.running){
+    game.runTime += dt;
+    document.getElementById('timerVal').textContent = fmtTime(game.runTime);
+  }
+
+  game.particles.forEach(p=>{ p.age+=dt; p.x+=p.vx*dt; p.y+=p.vy*dt; p.vx*=0.9; p.vy*=0.9; });
+  game.particles = game.particles.filter(p=>p.age<p.life);
+
   game.t+=dt;
 }
 function draw(){
   ctx.clearRect(0,0,W,H);
+  ctx.save();
+  if(game.t < game.shakeUntil){
+    const k = (game.shakeUntil-game.t)/0.22;
+    ctx.translate((Math.random()-0.5)*game.shakeMag*k, (Math.random()-0.5)*game.shakeMag*k);
+  }
 
   // Draws `img` centered in a `size`×`size` box at (cx,cy), cropping to a
   // centered square first — same behavior as CSS `object-fit: cover` with
@@ -851,15 +1191,93 @@ function draw(){
     ctx.drawImage(img, sx, sy, side, side, cx-size/2, cy-size/2, size, size);
   }
 
-  // grid
-  ctx.strokeStyle='rgba(140,232,210,.16)'; ctx.lineWidth=1;
-  const gs=42;
-  for(let x=0;x<=W;x+=gs){ ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,H);ctx.stroke(); }
-  for(let y=0;y<=H;y+=gs){ ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(W,y);ctx.stroke(); }
-  // axes
+  // Background transforms across the timeline: earliest years sit in the
+  // deep base teal, later years warm slightly toward the peach accent —
+  // so walking top-to-bottom visibly moves you through time.
+  const bgGrad = ctx.createLinearGradient(0,0,0,H);
+  bgGrad.addColorStop(0,   '#122F29');
+  bgGrad.addColorStop(0.5, '#154139');
+  bgGrad.addColorStop(1,   '#2B4A3E');
+  ctx.fillStyle = bgGrad;
+  ctx.fillRect(0,0,W,H);
+
+  // faint vertical texture lines
+  ctx.strokeStyle='rgba(140,232,210,.10)'; ctx.lineWidth=1;
+  const vgs=42;
+  for(let x=0;x<=W;x+=vgs){ ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,H);ctx.stroke(); }
+
+  // timeline gridlines — one per whole year, labeled along the left
+  // edge so the canvas reads as a real top-to-bottom timeline
+  const axisX = 46;
   ctx.strokeStyle='rgba(170,240,220,.32)'; ctx.lineWidth=1.5;
-  ctx.beginPath();ctx.moveTo(0,H-30);ctx.lineTo(W,H-30);ctx.stroke();
-  ctx.beginPath();ctx.moveTo(40,0);ctx.lineTo(40,H);ctx.stroke();
+  ctx.beginPath();ctx.moveTo(axisX,0);ctx.lineTo(axisX,H);ctx.stroke();
+
+  TIMELINE_YEARS.forEach(year=>{
+    const y = yFromDate(year)*H;
+    ctx.strokeStyle='rgba(140,232,210,.22)'; ctx.lineWidth=1;
+    ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(W,y);ctx.stroke();
+    ctx.font='700 11px "IBM Plex Mono", monospace';
+    ctx.fillStyle='#9FDCCB';
+    ctx.textAlign='left';
+    ctx.fillText(String(year), axisX+10, y-8);
+  });
+
+  // obstacles — static striped barriers to navigate around
+  OBSTACLES.forEach(o=>{
+    const r = obstacleRect(o);
+    ctx.save();
+    ctx.beginPath();
+    ctx.rect(r.x0, r.y0, r.w, r.h);
+    ctx.clip();
+    ctx.fillStyle = 'rgba(255,201,143,.16)';
+    ctx.fillRect(r.x0, r.y0, r.w, r.h);
+    ctx.strokeStyle = 'rgba(255,201,143,.55)'; ctx.lineWidth = 6;
+    const stripe = 16;
+    for(let d=-r.h; d<r.w+r.h; d+=stripe){
+      ctx.beginPath();
+      ctx.moveTo(r.x0+d, r.y1);
+      ctx.lineTo(r.x0+d+r.h, r.y0);
+      ctx.stroke();
+    }
+    ctx.restore();
+    ctx.strokeStyle = '#FFC98F'; ctx.lineWidth = 2;
+    ctx.strokeRect(r.x0, r.y0, r.w, r.h);
+  });
+
+  // year barrier — the locked line the player can't cross until they
+  // find the key. Removed automatically once every year is unlocked.
+  if(game.unlockIndex < UNLOCK_ORDER.length-1){
+    const by = frontierTopY(game.unlockIndex)*H;
+    ctx.save();
+    ctx.setLineDash([10,7]);
+    ctx.strokeStyle = 'rgba(255,201,143,.75)'; ctx.lineWidth = 3;
+    ctx.beginPath(); ctx.moveTo(0,by); ctx.lineTo(W,by); ctx.stroke();
+    ctx.restore();
+    ctx.font='700 12px "IBM Plex Mono", monospace';
+    ctx.fillStyle='#FFC98F';
+    ctx.textAlign='center';
+    ctx.fillText(`🔒 locked — find the key to reach ${UNLOCK_ORDER[game.unlockIndex+1]}`, W/2, by-10);
+  }
+
+  // key — walk over it to unlock the next year back
+  if(game.key){
+    const bob = reduceMotion?0:Math.sin(game.t*4)*4;
+    const ky = game.key.py+bob;
+    ctx.save();
+    ctx.beginPath(); ctx.arc(game.key.px, ky, 18, 0, Math.PI*2);
+    ctx.fillStyle = 'rgba(47,196,180,.22)'; ctx.fill();
+    ctx.translate(game.key.px, ky); ctx.rotate(Math.sin(game.t*2)*0.15);
+    ctx.beginPath(); ctx.arc(-5,0,7,0,Math.PI*2);
+    ctx.strokeStyle = '#2FC4B4'; ctx.lineWidth = 3.5; ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(2,0); ctx.lineTo(14,0);
+    ctx.moveTo(9,0); ctx.lineTo(9,5); ctx.moveTo(13,0); ctx.lineTo(13,5);
+    ctx.stroke();
+    ctx.restore();
+    ctx.font='700 11px "IBM Plex Mono", monospace';
+    ctx.fillStyle='#BDEFE0';
+    ctx.textAlign='center';
+    ctx.fillText('key', game.key.px, ky+30);
+  }
 
   // stations
   stations.forEach(s=>{
@@ -917,6 +1335,15 @@ function draw(){
     ctx.beginPath();ctx.arc(pl.px,pl.py,pl.r,0,7);ctx.fillStyle='#FFC98F';ctx.fill();
     ctx.fillStyle='#2C3531';ctx.font='700 11px "IBM Plex Mono", monospace';ctx.textAlign='center';ctx.fillText('you',pl.px,pl.py+4);
   }
+
+  // particles — small burst when a project is first collected
+  game.particles.forEach(p=>{
+    const a = 1-(p.age/p.life);
+    ctx.beginPath(); ctx.arc(p.x,p.y,3*a+1,0,7);
+    ctx.fillStyle = p.color; ctx.globalAlpha = a; ctx.fill(); ctx.globalAlpha = 1;
+  });
+
+  ctx.restore();
 }
 
 /* keep ESC working globally for modal in read mode too */
