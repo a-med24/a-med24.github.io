@@ -211,6 +211,10 @@
   .tl h4{font-family:var(--display);font-weight:500;font-size:1.12rem}
   .tl .where{color:var(--cobalt);font-size:.92rem;margin-bottom:6px}
   .tl p{color:var(--slate);font-size:.96rem}
+  .tl ul{color:var(--slate);font-size:.96rem;margin:2px 0 0;padding-left:1.15em}
+  .tl ul li{margin-bottom:5px}
+  .tl ul li::marker{color:var(--cobalt)}
+  .tl ul li:last-child{margin-bottom:0}
   .btn{
     display:inline-flex;align-items:center;gap:9px;margin-top:30px;
     font-family:var(--mono);font-weight:700;font-size:.82rem;
@@ -457,20 +461,32 @@
 
       <!-- Internship as its own row -->
       <div class="tl">
-        <div class="when">May 2026 - June 2026 </div>
+        <div class="when">May 2026 – June 2026</div>
         <div>
-          <h4>Quantum AI/ML Intern</h4>
-          <div class="where">Q-NEXT @ Argonne National Laboratory</div>
-          <p>FIXME: Description here</p>
+          <h4>Quantum AI/ML Intern · Contingent Worker</h4>
+          <div class="where">Argonne National Laboratory — Q-NEXT</div>
+          <ul>
+            <li>Developed a Python-based control framework for an autonomous robotic arm used in quantum materials research, enabling reliable TCP/IP communication and remote operation</li>
+            <li>Designed and implemented a three-layer safety architecture including geometric collision detection, hardware precondition validation, and a watchdog monitoring system to prevent unsafe robotic movement</li>
+            <li>Built a command-line interface to manually control the robotic system, teach and store positions, and integrate logging for reproducible automation workflows</li>
+            <li>Created automated unit tests using mock TCP sockets to validate networking, collision detection, interlock logic, and watchdog functionality without requiring physical hardware</li>
+            <li>Collaborated within a multidisciplinary team to prepare the control software for future integration into Argonne's MADSci autonomous materials discovery platform supporting AI-driven quantum materials research.</li>
+          </ul>
         </div>
       </div>
 
       <div class="tl">
-        <div class="when">Current</div>
+        <div class="when">September 2025 – Present</div>
         <div>
-          <h4>Computer Specialist I; Endpoint Management Team</h4>
-          <div class="where">University of Illinois at Chicago: Technology Solutions</div>
-          <p>FIXME: Description here</p>
+          <h4>Computer Specialist I</h4>
+          <div class="where">University of Illinois at Chicago — Endpoint Management</div>
+          <ul>
+            <li>Provide first- and second-tier technical support by troubleshooting hardware, software, and system issues, resolving support tickets for campus users in a timely manner</li>
+            <li>Develop and deploy PowerShell automation scripts in Microsoft Azure environments to streamline software deployment, system administration, and routine IT tasks</li>
+            <li>Reimage, configure, and deploy enterprise Windows computers using OSDCloud and Hiren's Boot tools while ensuring compliance with organizational security policies</li>
+            <li>Install, update, and maintain software across managed computers and virtual environments while supporting secure, standardized computing resources</li>
+            <li>Maintain IT asset inventory and collaborate with Windows and Mac support teams on system upgrades, software packaging, and technology improvement projects</li>
+          </ul>
         </div>
       </div>
     </div>
@@ -638,31 +654,19 @@
 const PROJECTS = [
   {
     name: "LitQuest",
-    date: "2026-03", // e.g. "2026-03" for March 2026 — try changing the month
-    x: 0.42, // design placement, 0-1 left-to-right — purely visual
+    date: "2026-03", 
+    x: 0.42,
     tags: ["MongoDB", "React", "Figma", "JavaScript"],
     desc: "A web application and app prototype built and designed during a UIC Hackathon that transformed classic literature into interactive visual novels to aid in improving adult literacy",
     live: "https://www.youtube.com/watch?v=nMSQqSU6TIo",
     code: "https://github.com/LitQuestSparkHacks2026",
     icon: "assets/icons/litquest.png",
-    images: [], // e.g. ["assets/projects/litquest-1.png", "assets/projects/litquest-2.png"]
+    images: [],
     fullDesc: "According to the National Literacy Institute, 54% of adults have a literacy level below 6th grade, and 20% are below 5th grade. \n\n With social media scrolling, often replacing reading, many people are missing out on the ideas, stories, and critical thinking skills that literature provides. \n\n LitQuest changes that. Our goal was to transform classic novels into interactive gamified visual novels to make reading engaging and comprehension more achievable. By turning reading into an interactive adventure as well as including adaptive vocabulary, LitQuest ensures that timeless and important stories are accessible to everyone, regardless of background or reading level." 
   },
   {
-    name: "Project Two",
-    date: 2025, // plain year is fine too — treated as January
-    x: 0.64,
-    tags: ["JavaScript", "React", "API"],
-    desc: "Replace with a one- or two-sentence summary of what this project does and why you built it.",
-    live: "https://your-demo-link.com",
-    code: "https://github.com/your-username/your-repo",
-    icon: "", // e.g. "assets/icons/project-two.png"
-    images: [],
-    fullDesc: ""
-  },
-  {
     name: "Music Recommendation App",
-    date: "2024-03", // "Spring 2024" — using March as a representative month
+    date: "2024-03",
     x: 0.5,
     tags: ["JavaScript", "Database Management", "Data Filtering"],
     desc: "First application created for my AP Computer Science Principles course in which I utilized JavaScript on Code.org to make a Music Recommendation app. Users could select a music genre and song duration, the navigate to the next screen where they would be displayed a song name, artist, and album cover along with additional songs if another button was pressed.",
