@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
 <title>Alex Medina — Software & Data</title>
 <meta name="description" content="Portfolio of a Computer Science & Statistics double major: software engineering and data analysis." />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -56,6 +56,7 @@
     line-height:1.6;
     -webkit-font-smoothing:antialiased;
     overflow-x:hidden;
+    overscroll-behavior-y:none;
   }
   a{color:inherit;text-decoration:none}
   ::selection{background:var(--amber);color:var(--ink)}
@@ -224,7 +225,7 @@
      ============================================================ */
   main#play{display:none;position:relative;background:var(--ink-2)}
   main#play.show{display:block}
-  .stage{position:relative;width:100%;height:calc(100vh - 59px);min-height:460px}
+  .stage{position:relative;width:100%;height:calc(100vh - 59px);height:calc(100dvh - 59px);min-height:460px;overscroll-behavior:none}
   canvas#world{display:block;width:100%;height:100%;touch-action:none;cursor:crosshair}
 
   .hud{position:absolute;left:0;right:0;top:0;padding:16px clamp(16px,4vw,30px);display:flex;justify-content:space-between;align-items:flex-start;gap:16px;pointer-events:none}
@@ -237,6 +238,7 @@
   .mute-btn{
     pointer-events:auto;appearance:none;border:1px solid #1E5A4F;background:rgba(14,50,44,.85);
     color:#DFF6EC;border-radius:8px;width:32px;height:28px;cursor:pointer;font-size:.9rem;line-height:1;
+    touch-action:manipulation;
   }
   .mute-btn:hover{border-color:var(--amber)}
 
@@ -270,14 +272,14 @@
   .prompt.on{opacity:1;transform:translateX(-50%) translateY(0)}
 
   /* touch controls */
-  .pad{position:absolute;left:18px;bottom:20px;display:grid;grid-template-columns:repeat(3,52px);grid-template-rows:repeat(3,52px);gap:6px}
-  .pad button{appearance:none;border:1px solid #1E5A4F;background:rgba(14,50,44,.85);color:#DFF6EC;border-radius:12px;font-size:1.2rem;cursor:pointer;display:flex;align-items:center;justify-content:center;user-select:none}
+  .pad{position:absolute;left:18px;bottom:calc(20px + env(safe-area-inset-bottom));display:grid;grid-template-columns:repeat(3,52px);grid-template-rows:repeat(3,52px);gap:6px}
+  .pad button{appearance:none;border:1px solid #1E5A4F;background:rgba(14,50,44,.85);color:#DFF6EC;border-radius:12px;font-size:1.2rem;cursor:pointer;display:flex;align-items:center;justify-content:center;user-select:none;touch-action:none}
   .pad button:active{background:var(--cobalt);color:#fff}
   .pad .up{grid-column:2;grid-row:1}
   .pad .left{grid-column:1;grid-row:2}
   .pad .right{grid-column:3;grid-row:2}
   .pad .down{grid-column:2;grid-row:3}
-  .act{position:absolute;right:22px;bottom:34px;width:72px;height:72px;border-radius:50%;border:0;background:var(--amber);color:var(--ink);font-family:var(--mono);font-weight:700;font-size:.8rem;cursor:pointer;box-shadow:0 8px 24px -8px rgba(255,201,143,.7)}
+  .act{position:absolute;right:22px;bottom:calc(34px + env(safe-area-inset-bottom));width:72px;height:72px;border-radius:50%;border:0;background:var(--amber);color:var(--ink);font-family:var(--mono);font-weight:700;font-size:.8rem;cursor:pointer;box-shadow:0 8px 24px -8px rgba(255,201,143,.7);touch-action:none}
   .act:active{transform:scale(.94)}
   .pad,.act{display:none}
   body.touch .pad,body.touch .act{display:grid}
@@ -632,10 +634,10 @@ const PROJECTS = [
   },
   {
     name: "Music Recommendation App",
-    date: "2024-03",
+    date: "2024-03", // "Spring 2024" — using March as a representative month
     x: 0.5,
     tags: ["JavaScript", "Database Management", "Data Filtering"],
-    desc: "First application created for my AP Computer Science Principles course in which I utilized JavaScript on Code.org to make a Music Recommendation app. Users could select a music genre and song duration, then navigate to the next screen where they would be displayed a song name, artist, and album cover along with additional songs.",
+    desc: "First application created for my AP Computer Science Principles course in which I utilized JavaScript on Code.org to make a Music Recommendation app. Users could select a music genre and song duration, the navigate to the next screen where they would be displayed a song name, artist, and album cover along with additional songs if another button was pressed.",
     live: "https://youtu.be/fV_ooA1ZtJ0",
     code: "https://github.com/a-med24/Music-Recommendation",
     icon: "",
@@ -767,7 +769,10 @@ function closePost(){
 }
 document.getElementById('postClose').addEventListener('click', closePost);
 document.getElementById('postBack').addEventListener('click', closePost);
-window.addEventListener('keydown', e=>{ if(e.key==='Escape' && post.classList.contains('on')) closePost(); });
+window.addEventListener('keydown', e=>{
+  if(!post.classList.contains('on')) return;
+  if(e.key==='Escape' || e.key==='e' || e.key==='E' || e.key==='Enter'){ e.preventDefault(); closePost(); }
+});
 
 /* ---------- Mode toggle ---------- */
 const readEl = document.getElementById('read');
@@ -1001,7 +1006,12 @@ function resize(){
   game.player.px = game.player.fx*W;
   game.player.py = game.player.fy*H;
 }
-window.addEventListener('resize', ()=>{ if(playOn) resize(); });
+let resizeTimer = null;
+window.addEventListener('resize', ()=>{
+  if(!playOn) return;
+  clearTimeout(resizeTimer);
+  resizeTimer = setTimeout(resize, 120);
+});
 
 /* input */
 const keys = {};
@@ -1010,7 +1020,10 @@ const winEl = document.getElementById('win');
 function inputBlocked(){ return modal.classList.contains('on') || winEl.classList.contains('on'); }
 window.addEventListener('keydown', e=>{
   if(!playOn) return;
-  if(modal.classList.contains('on')){ if(e.key==='Escape') closeModal(); return; }
+  if(modal.classList.contains('on')){
+    if(e.key==='Escape' || e.key==='e' || e.key==='E' || e.key==='Enter'){ e.preventDefault(); closeModal(); }
+    return;
+  }
   if(winEl.classList.contains('on')) return;
   if(KEYMAP[e.key]){ keys[KEYMAP[e.key]]=true; e.preventDefault(); ensureAudio(); }
   if((e.key==='e'||e.key==='E'||e.key==='Enter'||e.key===' ') && game.active>=0){ e.preventDefault(); interact(); }
