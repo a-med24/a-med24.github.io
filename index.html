@@ -209,11 +209,9 @@
   .timeline{display:flex;flex-direction:column;gap:0}
   .tl{display:grid;grid-template-columns:130px 1fr;gap:24px;padding:20px 0;border-top:1px solid var(--line)}
   .tl:first-child{border-top:0}
-  .tl .when{font-family:var(--mono);font-size:.78rem;color:var(--slate);padding-top:3px}
-  .tl-head{display:flex;align-items:center;gap:10px;margin-bottom:2px}
-  .tl-icon{width:34px;height:34px;border-radius:8px;object-fit:cover;border:1px solid var(--line);background:var(--paper-2);flex:none}
+  .tl .when{display:flex;flex-direction:column;align-items:flex-start;gap:10px;font-family:var(--mono);font-size:.78rem;color:var(--slate);padding-top:3px}
+  .tl-icon{width:40px;height:40px;border-radius:9px;object-fit:cover;border:1px solid var(--line);background:var(--paper-2);flex:none}
   .tl h4{font-family:var(--display);font-weight:500;font-size:1.12rem}
-  .tl-head h4{margin:0}
   .tl .where{color:var(--cobalt);font-size:.92rem;margin-bottom:6px}
   .cert-list{display:flex;flex-wrap:wrap;gap:10px}
   .cert-chip{
@@ -375,6 +373,7 @@
   @media(max-width:720px){
     .about-grid{grid-template-columns:1fr}
     .tl{grid-template-columns:1fr;gap:4px}
+    .tl .when{flex-direction:row;align-items:center;margin-bottom:6px}
     .hud-help{display:none}
     .objectives{max-width:130px}
     .obj-item{font-size:.68rem}
@@ -470,12 +469,12 @@
 
     <div class="timeline">
       <div class="tl">
-        <div class="when">Class of 2028</div>
+        <div class="when">
+          <img class="tl-icon" src="assets/logos/uic-logo.avif" alt="" onerror="this.remove()">
+          <span>Class of 2028</span>
+        </div>
         <div>
-          <div class="tl-head">
-            <img class="tl-icon" src="assets/logos/uic-logo.avif" alt="" onerror="this.remove()">
-            <h4>B.S. Computer Science &amp; Applied Statistics</h4>
-          </div>
+          <h4>B.S. Computer Science &amp; Applied Statistics</h4>
           <div class="where">University of Illinois at Chicago</div>
           <p>Coursework: Data Structures, Program Design, Software Design, Languages and Automata, Programming Practicum, Machine Organization.</p>
 
@@ -487,12 +486,12 @@
 
       <!-- Internship as its own row -->
       <div class="tl">
-        <div class="when">May 2026 – June 2026</div>
+        <div class="when">
+          <img class="tl-icon" src="assets/logos/Q-Next-logo.png" alt="" onerror="this.remove()">
+          <span>May 2026 – June 2026</span>
+        </div>
         <div>
-          <div class="tl-head">
-            <img class="tl-icon" src="assets/logos/Q-Next-logo.png" alt="" onerror="this.remove()">
-            <h4>Quantum AI/ML Intern · Contingent Worker</h4>
-          </div>
+          <h4>Quantum AI/ML Intern · Contingent Worker</h4>
           <div class="where">Argonne National Laboratory — Q-NEXT</div>
           <ul>
             <li>Developed a Python-based control framework for an autonomous robotic arm used in quantum materials research, enabling reliable TCP/IP communication and remote operation</li>
@@ -505,12 +504,12 @@
       </div>
 
       <div class="tl">
-        <div class="when">September 2025 – Present</div>
+        <div class="when">
+          <img class="tl-icon" src="assets/logos/uic_technology_solutions_logo.jpg" alt="" onerror="this.remove()">
+          <span>September 2025 – Present</span>
+        </div>
         <div>
-          <div class="tl-head">
-            <img class="tl-icon" src="assets/logos/uic_technology_solutions_logo.jpg" alt="" onerror="this.remove()">
-            <h4>Computer Specialist I</h4>
-          </div>
+          <h4>Computer Specialist I</h4>
           <div class="where">University of Illinois at Chicago — Endpoint Management</div>
           <ul>
             <li>Provide first- and second-tier technical support by troubleshooting hardware, software, and system issues, resolving support tickets for campus users in a timely manner</li>
