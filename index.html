@@ -209,7 +209,7 @@
   .timeline{display:flex;flex-direction:column;gap:0}
   .tl{display:grid;grid-template-columns:130px 1fr;gap:24px;padding:20px 0;border-top:1px solid var(--line)}
   .tl:first-child{border-top:0}
-  .tl .when{display:flex;flex-direction:column;align-items:flex-start;gap:10px;font-family:var(--mono);font-size:.78rem;color:var(--slate);padding-top:3px}
+  .tl .when{display:flex;flex-direction:column;align-items:center;text-align:center;gap:10px;font-family:var(--mono);font-size:.78rem;color:var(--slate);padding-top:3px}
   .tl-icon{width:60px;height:60px;border-radius:9px;object-fit:cover;border:1px solid var(--line);background:var(--paper-2);flex:none}
   .tl h4{font-family:var(--display);font-weight:500;font-size:1.12rem}
   .tl .where{color:var(--cobalt);font-size:.92rem;margin-bottom:6px}
@@ -237,19 +237,11 @@
   }
   .btn:hover{transform:translateY(-2px);background:var(--cobalt)}
 
-  /* CONTACT */
-  .contact{
-    display:flex;flex-direction:column;gap:16px;max-width:420px;
-    background:var(--paper);border:1px solid var(--line);border-radius:var(--r);
-    padding:22px 22px 20px;
-  }
-  .contact .big{font-family:var(--display);font-weight:600;font-size:1.15rem;letter-spacing:-.01em;line-height:1.4}
-  .contact .big a{color:var(--cobalt);text-decoration:underline;text-decoration-thickness:2px;text-underline-offset:4px}
-  .links-row{display:flex;flex-wrap:wrap;gap:8px}
-  .pill{font-family:var(--mono);font-size:.72rem;font-weight:700;border:1px solid var(--line);border-radius:999px;padding:7px 13px;transition:border-color .2s,color .2s}
-  .pill:hover{border-color:var(--cobalt);color:var(--cobalt)}
 
   footer{border-top:1px solid var(--line);padding:30px clamp(18px,5vw,48px);font-family:var(--mono);font-size:.74rem;color:var(--slate);display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px}
+  .footer-contact{display:flex;flex-wrap:wrap;gap:16px}
+  .footer-contact a{color:var(--slate);transition:color .2s}
+  .footer-contact a:hover{color:var(--cobalt)}
 
   /* ============================================================
      PLAY MODE
@@ -372,6 +364,7 @@
   /* ---------- RESPONSIVE ---------- */
   @media(max-width:720px){
     .about-grid{grid-template-columns:1fr}
+    .about-photo{width:150px;max-width:45vw;margin:0 auto}
     .tl{grid-template-columns:1fr;gap:4px}
     .tl .when{flex-direction:row;align-items:center;margin-bottom:6px}
     .hud-help{display:none}
@@ -428,7 +421,7 @@
 
   <section class="block" id="about">
     <div class="wrap">
-      <div class="sec-head"><h2>About</h2><span class="sec-no">// 01</span></div>
+      <div class="sec-head"><h2>About</h2></div>
       <div class="about-grid">
         <div class="about-prose">
           <p>Ever since I was a kid, I've been fascinated by how technology works, from taking apart a broken Nintendo DS to poking around inside the code of the video games I loved. That curiosity grew into a passion for coding that I'm still chasing today.</p>
@@ -451,21 +444,21 @@
 
   <section class="block" id="work">
     <div class="wrap">
-      <div class="sec-head"><h2>Selected work</h2><span class="sec-no">// 02</span></div>
+      <div class="sec-head"><h2>Selected work</h2></div>
       <div class="grid" id="cards"><!-- injected from PROJECTS --></div>
     </div>
   </section>
 
   <section class="block" id="in-progress">
     <div class="wrap">
-      <div class="sec-head"><h2>In progress</h2><span class="sec-no">// 03</span></div>
+      <div class="sec-head"><h2>In progress</h2></div>
       <div class="grid" id="progress-cards"><!-- injected from IN_PROGRESS --></div>
     </div>
   </section>
 
   <section class="block" id="resume">
   <div class="wrap">
-    <div class="sec-head"><h2>Resume</h2><span class="sec-no">// 04</span></div>
+    <div class="sec-head"><h2>Resume</h2></div>
 
     <div class="timeline">
       <div class="tl">
@@ -535,22 +528,13 @@
     </div>
   </section>
 
-  <section class="block" id="contact">
-    <div class="wrap">
-      <div class="sec-head"><h2>Contact</h2><span class="sec-no">// 05</span></div>
-      <div class="contact">
-        <p class="big">Got a role, a dataset, or an idea? <a href="mailto:alexandra.med24@gmail.com">alexandra.med24@gmail.com</a></p>
-        <div class="links-row">
-          <a class="pill" href="https://github.com/a-med24" target="_blank" rel="noopener">GitHub ↗</a>
-          <a class="pill" href="https://www.linkedin.com/in/alex-medina-cs/" target="_blank" rel="noopener">LinkedIn ↗</a>
-          <a class="pill" href="mailto:alexandra.med24@gmail.com">Email ↗</a>
-        </div>
-      </div>
-    </div>
-  </section>
-
   <footer>
     <span>© <span id="year"></span> Alex Medina </span>
+    <div class="footer-contact">
+      <a href="mailto:alexandra.med24@gmail.com">alexandra.med24@gmail.com</a>
+      <a href="https://github.com/a-med24" target="_blank" rel="noopener">GitHub ↗</a>
+      <a href="https://www.linkedin.com/in/alex-medina-cs/" target="_blank" rel="noopener">LinkedIn ↗</a>
+    </div>
   </footer>
 </main>
 
