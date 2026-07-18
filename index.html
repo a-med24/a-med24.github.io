@@ -152,6 +152,8 @@
 
   /* ABOUT */
   .about-grid{display:grid;grid-template-columns:1.5fr 1fr;gap:clamp(28px,5vw,64px);align-items:start}
+  .about-side{display:flex;flex-direction:column;gap:18px}
+  .about-photo{width:100%;aspect-ratio:1/1;object-fit:cover;border-radius:var(--r);border:1px solid var(--line);background:var(--paper-2)}
   .about-prose p{margin-bottom:1em;font-size:1.06rem}
   .about-prose p:last-child{margin-bottom:0}
   .stats{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--line);border:1px solid var(--line);border-radius:var(--r);overflow:hidden}
@@ -208,8 +210,22 @@
   .tl{display:grid;grid-template-columns:130px 1fr;gap:24px;padding:20px 0;border-top:1px solid var(--line)}
   .tl:first-child{border-top:0}
   .tl .when{font-family:var(--mono);font-size:.78rem;color:var(--slate);padding-top:3px}
+  .tl-head{display:flex;align-items:center;gap:10px;margin-bottom:2px}
+  .tl-icon{width:34px;height:34px;border-radius:8px;object-fit:cover;border:1px solid var(--line);background:var(--paper-2);flex:none}
   .tl h4{font-family:var(--display);font-weight:500;font-size:1.12rem}
+  .tl-head h4{margin:0}
   .tl .where{color:var(--cobalt);font-size:.92rem;margin-bottom:6px}
+  .cert-list{display:flex;flex-wrap:wrap;gap:10px}
+  .cert-chip{
+    display:flex;align-items:center;gap:10px;background:var(--paper);border:1px solid var(--line);
+    border-radius:12px;padding:9px 14px 9px 9px;transition:border-color .2s,transform .18s;
+  }
+  a.cert-chip{cursor:pointer}
+  a.cert-chip:hover{border-color:var(--cobalt);transform:translateY(-2px)}
+  .cert-icon{width:32px;height:32px;border-radius:7px;object-fit:cover;border:1px solid var(--line);background:var(--paper-2);flex:none}
+  .cert-text{display:flex;flex-direction:column}
+  .cert-name{font-family:var(--body);font-weight:600;font-size:.86rem;color:var(--ink);display:inline-flex;align-items:center;gap:5px}
+  .cert-meta{font-family:var(--mono);font-size:.72rem;color:var(--slate)}
   .tl p{color:var(--slate);font-size:.96rem}
   .tl ul{color:var(--slate);font-size:.96rem;margin:2px 0 0;padding-left:1.15em}
   .tl ul li{margin-bottom:5px}
@@ -224,11 +240,15 @@
   .btn:hover{transform:translateY(-2px);background:var(--cobalt)}
 
   /* CONTACT */
-  .contact{display:flex;flex-direction:column;gap:26px;max-width:680px}
-  .contact .big{font-family:var(--display);font-weight:700;font-size:clamp(1.5rem,4vw,2.4rem);letter-spacing:-.015em;line-height:1.1}
-  .contact .big a{color:var(--cobalt);text-decoration:underline;text-decoration-thickness:2px;text-underline-offset:5px}
-  .links-row{display:flex;flex-wrap:wrap;gap:12px}
-  .pill{font-family:var(--mono);font-size:.82rem;font-weight:700;border:1px solid var(--line);border-radius:999px;padding:11px 18px;transition:border-color .2s,color .2s}
+  .contact{
+    display:flex;flex-direction:column;gap:16px;max-width:420px;
+    background:var(--paper);border:1px solid var(--line);border-radius:var(--r);
+    padding:22px 22px 20px;
+  }
+  .contact .big{font-family:var(--display);font-weight:600;font-size:1.15rem;letter-spacing:-.01em;line-height:1.4}
+  .contact .big a{color:var(--cobalt);text-decoration:underline;text-decoration-thickness:2px;text-underline-offset:4px}
+  .links-row{display:flex;flex-wrap:wrap;gap:8px}
+  .pill{font-family:var(--mono);font-size:.72rem;font-weight:700;border:1px solid var(--line);border-radius:999px;padding:7px 13px;transition:border-color .2s,color .2s}
   .pill:hover{border-color:var(--cobalt);color:var(--cobalt)}
 
   footer{border-top:1px solid var(--line);padding:30px clamp(18px,5vw,48px);font-family:var(--mono);font-size:.74rem;color:var(--slate);display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px}
@@ -417,11 +437,14 @@
           <p>Outside of class I learn new languages, build projects, and stay active in student organizations. I'm a member of LOGICA (the Latinx Organization of Growth and Computer Analytics) and the Association for Computing Machinery (ACM). I'm looking for opportunities in software engineering or data science where I can contribute to impactful projects and keep growing as both a developer and an analyst.</p>
         </div>
       
-        <div class="stats" aria-label="By the numbers">
-          <div class="stat"><div class="n">3.5</div><div class="l">GPA</div></div>
-          <div class="stat"><div class="n">UIC</div><div class="l">Chicago, IL</div></div>
-          <div class="stat"><div class="n">Junior</div><div class="l">Standing</div></div>
-          <div class="stat"><div class="n">2</div><div class="l">Majors</div></div>
+        <div class="about-side">
+          <img class="about-photo" id="about-photo" src="assets/logos/Alex_Github.jpg" alt="Alex Medina" onerror="this.style.display='none'">
+          <div class="stats" aria-label="By the numbers">
+            <div class="stat"><div class="n">3.5</div><div class="l">GPA</div></div>
+            <div class="stat"><div class="n">UIC</div><div class="l">Chicago, IL</div></div>
+            <div class="stat"><div class="n">Junior</div><div class="l">Standing</div></div>
+            <div class="stat"><div class="n">2</div><div class="l">Majors</div></div>
+          </div>
         </div>
       </div>
     </div>
@@ -449,7 +472,10 @@
       <div class="tl">
         <div class="when">Class of 2028</div>
         <div>
-          <h4>B.S. Computer Science &amp; Applied Statistics</h4>
+          <div class="tl-head">
+            <img class="tl-icon" src="assets/logos/uic-logo.avif" alt="" onerror="this.remove()">
+            <h4>B.S. Computer Science &amp; Applied Statistics</h4>
+          </div>
           <div class="where">University of Illinois at Chicago</div>
           <p>Coursework: Data Structures, Program Design, Software Design, Languages and Automata, Programming Practicum, Machine Organization.</p>
 
@@ -463,7 +489,10 @@
       <div class="tl">
         <div class="when">May 2026 – June 2026</div>
         <div>
-          <h4>Quantum AI/ML Intern · Contingent Worker</h4>
+          <div class="tl-head">
+            <img class="tl-icon" src="assets/logos/Q-Next-logo.png" alt="" onerror="this.remove()">
+            <h4>Quantum AI/ML Intern · Contingent Worker</h4>
+          </div>
           <div class="where">Argonne National Laboratory — Q-NEXT</div>
           <ul>
             <li>Developed a Python-based control framework for an autonomous robotic arm used in quantum materials research, enabling reliable TCP/IP communication and remote operation</li>
@@ -478,7 +507,10 @@
       <div class="tl">
         <div class="when">September 2025 – Present</div>
         <div>
-          <h4>Computer Specialist I</h4>
+          <div class="tl-head">
+            <img class="tl-icon" src="assets/logos/uic_technology_solutions_logo.jpg" alt="" onerror="this.remove()">
+            <h4>Computer Specialist I</h4>
+          </div>
           <div class="where">University of Illinois at Chicago — Endpoint Management</div>
           <ul>
             <li>Provide first- and second-tier technical support by troubleshooting hardware, software, and system issues, resolving support tickets for campus users in a timely manner</li>
@@ -496,6 +528,11 @@
       <div class="tags">
         <span class="tag">Python</span><span class="tag">JavaScript</span><span class="tag">C / C++</span><span class="tag">R</span><span class="tag">Java</span><span class="tag">PowerShell</span>
       </div>
+    </div>
+
+    <div style="margin-top:26px">
+      <div style="font-family:var(--mono);font-size:.74rem;letter-spacing:.12em;text-transform:uppercase;color:var(--slate);margin-bottom:10px">Certifications</div>
+      <div class="cert-list" id="cert-list"><!-- injected from CERTIFICATIONS --></div>
     </div>
   </section>
 
@@ -701,6 +738,28 @@ const IN_PROGRESS = [
   },
 ];
 
+/* ================================================================
+   CERTIFICATIONS — shown as small chips in the Resume section.
+   FIELDS
+     name — certification title
+     issuer — who issued it (shown as small text under the name)
+     date — OPTIONAL, any short string (e.g. "2025" or "Issued May 2026")
+     url — OPTIONAL link to the credential — a PDF works great here
+             (e.g. "assets/certifications/your-cert.pdf"). Opens in a
+             new tab. Leave "" for a non-clickable chip.
+     icon — OPTIONAL small logo image. Leave "" for no icon.
+   Delete the placeholder entry once you add a real one.
+   ================================================================ */
+const CERTIFICATIONS = [
+  {
+    name: "Certification name",
+    issuer: "Issuing organization",
+    date: "2026",
+    url: "assets/certifications/certification-name.pdf",
+    icon: ""
+  },
+];
+
 /* ---------- Custom art (optional) ----------
 */
 const CHARACTER_SRC_RIGHT = "assets/character-right.png";
@@ -762,6 +821,22 @@ IN_PROGRESS.forEach(p=>{
     <div class="tags">${p.tags.map(t=>`<span class="tag">${t}</span>`).join('')}</div>
     ${links ? `<div class="card-links">${links}</div>` : ''}`;
   progressCards.appendChild(el);
+});
+
+/* ---------- Build Certifications chips ---------- */
+const certList = document.getElementById('cert-list');
+CERTIFICATIONS.forEach(c=>{
+  const tag = c.url ? 'a' : 'div';
+  const el = document.createElement(tag);
+  el.className = 'cert-chip';
+  if(c.url){ el.href = c.url; el.target = '_blank'; el.rel = 'noopener'; }
+  el.innerHTML = `
+    ${c.icon ? `<img class="cert-icon" src="${c.icon}" alt="" loading="lazy" onerror="this.remove()">` : ''}
+    <div class="cert-text">
+      <span class="cert-name">${c.name}${c.url ? ' <span>↗</span>' : ''}</span>
+      <span class="cert-meta">${[c.issuer, c.date].filter(Boolean).join(' · ')}</span>
+    </div>`;
+  certList.appendChild(el);
 });
 
 /* ---------- Shared modal ---------- */
