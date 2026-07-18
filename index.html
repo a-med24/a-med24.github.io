@@ -143,6 +143,13 @@
     font-family:var(--mono);background:var(--ink);color:#fff;
     padding:3px 8px;border-radius:6px;font-size:.72rem;
   }
+  .hint-play{
+    appearance:none;border:0;cursor:pointer;
+    font-family:var(--mono);font-weight:700;background:var(--ink);color:#fff;
+    padding:3px 8px;border-radius:6px;font-size:.72rem;letter-spacing:.02em;
+    transition:background .18s, transform .18s;
+  }
+  .hint-play:hover{background:var(--cobalt);transform:translateY(-1px)}
 
   /* SECTION SHELL */
   section.block{padding:clamp(56px,9vh,104px) 0;border-top:1px solid var(--line)}
@@ -416,7 +423,7 @@
         <span><i></i>Data science</span>
         <span><i></i>Open to opportunities</span>
       </div>
-      <div class="hint">↘ scroll to explore, or hit <kbd>PLAY</kbd> to walk through my work as a game</div>
+      <div class="hint">↘ scroll to explore, or hit <button class="hint-play" id="heroPlayBtn">PLAY</button> to walk through my work as a game</div>
     </div>
   </section>
 
@@ -445,14 +452,14 @@
 
   <section class="block" id="work">
     <div class="wrap">
-      <div class="sec-head"><h2>Selected Work</h2></div>
+      <div class="sec-head"><h2>Selected work</h2></div>
       <div class="grid" id="cards"><!-- injected from PROJECTS --></div>
     </div>
   </section>
 
   <section class="block" id="in-progress">
     <div class="wrap">
-      <div class="sec-head"><h2>In Progress</h2></div>
+      <div class="sec-head"><h2>In progress</h2></div>
       <div class="grid" id="progress-cards"><!-- injected from IN_PROGRESS --></div>
     </div>
   </section>
@@ -935,6 +942,7 @@ function setMode(play){
 }
 tabRead.addEventListener('click', ()=>setMode(false));
 tabPlay.addEventListener('click', ()=>setMode(true));
+document.getElementById('heroPlayBtn').addEventListener('click', ()=>setMode(true));
 
 /* ================================================================
    PLAY MODE — a top-down "plot canvas" you walk across.
