@@ -629,28 +629,16 @@ const PROJECTS = [
     fullDesc: "According to the National Literacy Institute, 54% of adults have a literacy level below 6th grade, and 20% are below 5th grade. \n\n With social media scrolling, often replacing reading, many people are missing out on the ideas, stories, and critical thinking skills that literature provides. \n\n LitQuest changes that. Our goal was to transform classic novels into interactive gamified visual novels to make reading engaging and comprehension more achievable. By turning reading into an interactive adventure as well as including adaptive vocabulary, LitQuest ensures that timeless and important stories are accessible to everyone, regardless of background or reading level." 
   },
   {
-    name: "Music Recommendation App",
-    date: "2024-03",
-    x: 0.5,
-    tags: ["JavaScript", "Database Management", "Data Filtering"],
-    desc: "First application created for my AP Computer Science Principles course in which I utilized JavaScript on Code.org to make a Music Recommendation app. Users could select a music genre and song duration, the navigate to the next screen where they would be displayed a song name, artist, and album cover along with additional songs if another button was pressed.",
-    live: "https://youtu.be/fV_ooA1ZtJ0",
-    code: "https://github.com/a-med24/Music-Recommendation",
-    icon: "",
-    images: [],
-    fullDesc: ""
-  },
-  {
-    name: "SIRVD Pandemic Simulator",
-    date: "2025-11",
-    x: 0.3,
-    tags: ["Python", "Matplotlib"],
-    desc: "An interactive Python simulation that models the spread of a disease through a population across five compartments — Susceptible, Infected, Recovered, Vaccinated, and Deceased — and visualizes the results with Matplotlib.",
+    name: "Checkers",
+    date: "2026-05",
+    x: 0.7,
+    tags: ["Java", "JavaFX", "TCP Sockets", "Multithreading", "Custom Serialized Messaging Protocol"],
+    desc: "A networked, two-player Checkers game with a JavaFX client and a multithreaded Java server, featuring a full rules engine (forced jumps, multi-jump chains, king promotion, win detection), a login/lobby system with chat, matchmaking, rematches, and multiple selectable board themes.",
     live: "",
-    code: "https://github.com/a-med24/SIRVD_Simulation",
-    icon: "",
+    code: "https://github.com/a-med24/Checkers",
+    icon: "assets/icons/SakuraChecker1Crown.png",
     images: [],
-    fullDesc: "The SIRVD Pandemic Simulator is a command-line Python program that models epidemic dynamics using a day-by-day (Euler's method) compartmental simulation. Users interactively set parameters such as population size, initial infected/vaccinated counts, infection rate, recovery rate, death rate, vaccination rate, and simulation length, with sensible defaults available for quick runs. Each simulated day, the model moves individuals between the Susceptible, Infected, Recovered, Vaccinated, and Deceased groups based on the chosen rates, then plots all five groups over time using Matplotlib once the simulation completes. Originally built during a combined Biology/Computer Science course, the project intentionally favors clear, readable logic (plain loops and lists) over more advanced or optimized techniques, making it a solid demonstration of translating a real-world system into a working simulation and turning numerical output into a clear visualization."
+    fullDesc: "Checkers is a client-server multiplayer game built in Java, pairing a multithreaded TCP server with a JavaFX desktop client. The server accepts connections, spins up a dedicated thread per player, queues players for matchmaking, and manages active game sessions — all communication is handled through a custom serializable message protocol covering login, moves, chat, rematches, and disconnects. Game state and rule enforcement live entirely in a server-authoritative checkers engine that handles legal move validation, mandatory jumps, chained multi-jump captures, king promotion, and win/draw detection, so both clients always see a consistent, validated board. On the client side, players log in, see a live list of other connected users, chat in a shared lobby or privately, get matched into a game, and play on a fully rendered board that supports four selectable visual themes (Default, Sakura, Ocean, and Wicked) with matching king-piece artwork. A separate server admin window shows a live activity log of connections, moves, and disconnects. The project demonstrates client-server network programming, multithreaded server design, and implementing non-trivial game logic (chain captures, king rules, turn management) cleanly separated from the UI."
   },
   {
     name: "Cat Weather App",
@@ -666,17 +654,28 @@ const PROJECTS = [
 
   },
   {
-    name: "Checkers",
-    date: "2026-05",
-    x: 0.7,
-    tags: ["Java", "JavaFX", "TCP Sockets", "Multithreading", "Custom Serialized Messaging Protocol"],
-    desc: "A networked, two-player Checkers game with a JavaFX client and a multithreaded Java server, featuring a full rules engine (forced jumps, multi-jump chains, king promotion, win detection), a login/lobby system with chat, matchmaking, rematches, and multiple selectable board themes.",
+    name: "SIRVD Pandemic Simulator",
+    date: "2025-11",
+    x: 0.3,
+    tags: ["Python", "Matplotlib"],
+    desc: "An interactive Python simulation that models the spread of a disease through a population across five compartments — Susceptible, Infected, Recovered, Vaccinated, and Deceased — and visualizes the results with Matplotlib.",
     live: "",
-    code: "https://github.com/a-med24/Checkers",
-    icon: "assets\icons\SakuraChecker1Crown.png",
+    code: "https://github.com/a-med24/SIRVD_Simulation",
+    icon: "",
     images: [],
-    fullDesc: "Checkers is a client-server multiplayer game built in Java, pairing a multithreaded TCP server with a JavaFX desktop client. The server accepts connections, spins up a dedicated thread per player, queues players for matchmaking, and manages active game sessions — all communication is handled through a custom serializable message protocol covering login, moves, chat, rematches, and disconnects. Game state and rule enforcement live entirely in a server-authoritative checkers engine that handles legal move validation, mandatory jumps, chained multi-jump captures, king promotion, and win/draw detection, so both clients always see a consistent, validated board. On the client side, players log in, see a live list of other connected users, chat in a shared lobby or privately, get matched into a game, and play on a fully rendered board that supports four selectable visual themes (Default, Sakura, Ocean, and Wicked) with matching king-piece artwork. A separate server admin window shows a live activity log of connections, moves, and disconnects. The project demonstrates client-server network programming, multithreaded server design, and implementing non-trivial game logic (chain captures, king rules, turn management) cleanly separated from the UI."
-    
+    fullDesc: "The SIRVD Pandemic Simulator is a command-line Python program that models epidemic dynamics using a day-by-day (Euler's method) compartmental simulation. Users interactively set parameters such as population size, initial infected/vaccinated counts, infection rate, recovery rate, death rate, vaccination rate, and simulation length, with sensible defaults available for quick runs. Each simulated day, the model moves individuals between the Susceptible, Infected, Recovered, Vaccinated, and Deceased groups based on the chosen rates, then plots all five groups over time using Matplotlib once the simulation completes. Originally built during a combined Biology/Computer Science course, the project intentionally favors clear, readable logic (plain loops and lists) over more advanced or optimized techniques, making it a solid demonstration of translating a real-world system into a working simulation and turning numerical output into a clear visualization."
+  },
+  {
+    name: "Music Recommendation App",
+    date: "2024-03",
+    x: 0.5,
+    tags: ["JavaScript", "Database Management", "Data Filtering"],
+    desc: "First application created for my AP Computer Science Principles course in which I utilized JavaScript on Code.org to make a Music Recommendation app. Users could select a music genre and song duration, the navigate to the next screen where they would be displayed a song name, artist, and album cover along with additional songs if another button was pressed.",
+    live: "https://youtu.be/fV_ooA1ZtJ0",
+    code: "https://github.com/a-med24/Music-Recommendation",
+    icon: "",
+    images: [],
+    fullDesc: ""
   },
 ];
 
