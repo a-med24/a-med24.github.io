@@ -639,7 +639,7 @@ const PROJECTS = [
     live: "https://www.youtube.com/watch?v=nMSQqSU6TIo",
     code: "https://github.com/LitQuestSparkHacks2026",
     icon: "assets/icons/litquest.png",
-    iconZoom: 1, 
+    iconZoom: 1, // bump to 1.3–1.8 if this logo looks small in its frame
     images: [],
     fullDesc: "According to the National Literacy Institute, 54% of adults have a literacy level below 6th grade, and 20% are below 5th grade. \n\n With social media scrolling, often replacing reading, many people are missing out on the ideas, stories, and critical thinking skills that literature provides. \n\n LitQuest changes that. Our goal was to transform classic novels into interactive gamified visual novels to make reading engaging and comprehension more achievable. By turning reading into an interactive adventure as well as including adaptive vocabulary, LitQuest ensures that timeless and important stories are accessible to everyone, regardless of background or reading level." 
   },
@@ -652,7 +652,7 @@ const PROJECTS = [
     live: "",
     code: "https://github.com/a-med24/Checkers",
     icon: "assets/icons/SakuraChecker1Crown.png",
-    iconZoom: 1.8, // bump to 1.3–1.8 if this logo looks small in its frame
+    iconZoom: 2, // bump to 1.3–1.8 if this logo looks small in its frame
     images: [],
     fullDesc: "Checkers is a client-server multiplayer game built in Java, pairing a multithreaded TCP server with a JavaFX desktop client. The server accepts connections, spins up a dedicated thread per player, queues players for matchmaking, and manages active game sessions — all communication is handled through a custom serializable message protocol covering login, moves, chat, rematches, and disconnects. Game state and rule enforcement live entirely in a server-authoritative checkers engine that handles legal move validation, mandatory jumps, chained multi-jump captures, king promotion, and win/draw detection, so both clients always see a consistent, validated board. On the client side, players log in, see a live list of other connected users, chat in a shared lobby or privately, get matched into a game, and play on a fully rendered board that supports four selectable visual themes (Default, Sakura, Ocean, and Wicked) with matching king-piece artwork. A separate server admin window shows a live activity log of connections, moves, and disconnects. The project demonstrates client-server network programming, multithreaded server design, and implementing non-trivial game logic (chain captures, king rules, turn management) cleanly separated from the UI."
   },
@@ -1456,8 +1456,6 @@ function draw(){
       ctx.beginPath(); ctx.arc(s.px,s.py,R,0,7); ctx.closePath(); ctx.clip();
       drawImageCentered(s.iconImg, s.px, s.py, R*2, s.iconZoom);
       ctx.restore();
-      ctx.beginPath(); ctx.arc(s.px,s.py,R,0,7);
-      ctx.lineWidth=2.5; ctx.strokeStyle=isActive?'#FFC98F':(s.visited?'#FFC98F':'#2FC4B4'); ctx.stroke();
     } else {
       ctx.beginPath(); ctx.arc(s.px,s.py,9,0,7);
       if(s.visited){ ctx.fillStyle='#FFC98F'; ctx.fill(); }
