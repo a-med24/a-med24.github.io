@@ -332,6 +332,15 @@
   .sheet .close{position:absolute;top:16px;right:16px;appearance:none;border:1px solid var(--line);background:var(--paper);width:34px;height:34px;border-radius:50%;cursor:pointer;font-size:1.1rem;color:var(--slate);line-height:1}
   .sheet .close:hover{border-color:var(--ink);color:var(--ink)}
   .sheet .m-no{font-family:var(--mono);font-size:.74rem;color:var(--cobalt)}
+  .live-pill{
+    display:none;align-items:center;gap:8px;margin-bottom:14px;
+    font-family:var(--mono);font-weight:700;font-size:.82rem;
+    background:var(--cobalt);color:#fff;padding:11px 18px;border-radius:999px;
+    width:fit-content;transition:transform .18s, background .2s;
+  }
+  .live-pill.show{display:inline-flex}
+  .live-pill:hover{transform:translateY(-2px);background:var(--cobalt-ink)}
+  .live-pill .play-ic{display:inline-flex;align-items:center;justify-content:center;width:16px;height:16px;background:#fff;border-radius:50%;color:var(--cobalt);font-size:.6rem}
   .sheet h3{font-family:var(--display);font-weight:700;font-size:1.7rem;letter-spacing:-.015em;margin:6px 0 12px}
   .m-date{font-family:var(--mono);font-size:.78rem;color:var(--slate);margin-top:-6px;margin-bottom:12px}
   .sheet p{color:var(--slate);margin-bottom:16px}
@@ -594,6 +603,7 @@
     <div class="card-icon" id="m-icon-wrap" style="display:none;margin-bottom:10px">
       <img class="card-icon-img" id="m-icon" src="" alt="" onerror="this.parentElement.style.display='none'">
     </div>
+    <a class="live-pill" id="m-live" href="#" target="_blank" rel="noopener"><span class="play-ic">▶</span> Watch live</a>
     <div class="m-no" id="m-no"></div>
     <h3 id="m-title"></h3>
     <div class="m-date" id="m-date"></div>
@@ -615,6 +625,7 @@
     </div>
     <div class="post-body wrap">
       <div class="post-no" id="post-no"></div>
+      <a class="live-pill" id="post-live" href="#" target="_blank" rel="noopener"><span class="play-ic">▶</span> Watch live</a>
       <h2 id="post-title"></h2>
       <div class="m-date" id="post-date"></div>
       <div class="tags" id="post-tags"></div>
@@ -826,14 +837,16 @@ function openModal(i){
   const mIconWrap = document.getElementById('m-icon-wrap');
   if(p.icon){ mIcon.src = p.icon; mIcon.style.transform = `scale(${p.iconZoom||1})`; mIconWrap.style.display = 'block'; }
   else { mIconWrap.style.display = 'none'; }
+  const mLive = document.getElementById('m-live');
+  if(p.live){ mLive.href = p.live; mLive.classList.add('show'); }
+  else { mLive.classList.remove('show'); mLive.removeAttribute('href'); }
   document.getElementById('m-no').textContent = `PROJECT P${fmt(i+1)}`;
   document.getElementById('m-title').textContent = p.name;
   document.getElementById('m-date').textContent = formatDateValue(dateValue(p));
   document.getElementById('m-desc').textContent = p.desc;
   document.getElementById('m-tags').innerHTML = p.tags.map(t=>`<span class="tag">${t}</span>`).join('');
   document.getElementById('m-links').innerHTML =
-    `<a href="${p.live}" target="_blank" rel="noopener">Live <span>↗</span></a>
-     <a href="${p.code}" target="_blank" rel="noopener">Code <span>↗</span></a>
+    `<a href="${p.code}" target="_blank" rel="noopener">Code <span>↗</span></a>
      <a href="#" class="read-more" data-i="${i}">Read full post <span>↗</span></a>`;
   lastFocus = document.activeElement;
   modal.classList.add('on');
@@ -869,13 +882,16 @@ function openPost(i){
     cover.style.display = 'none';
   }
 
+  const postLive = document.getElementById('post-live');
+  if(p.live){ postLive.href = p.live; postLive.classList.add('show'); }
+  else { postLive.classList.remove('show'); postLive.removeAttribute('href'); }
+
   document.getElementById('post-no').textContent = `PROJECT P${fmt(i+1)}`;
   document.getElementById('post-title').textContent = p.name;
   document.getElementById('post-date').textContent = formatDateValue(dateValue(p));
   document.getElementById('post-tags').innerHTML = p.tags.map(t=>`<span class="tag">${t}</span>`).join('');
   document.getElementById('post-links').innerHTML =
-    `<a href="${p.live}" target="_blank" rel="noopener">Live <span>↗</span></a>
-     <a href="${p.code}" target="_blank" rel="noopener">Code <span>↗</span></a>`;
+    `<a href="${p.code}" target="_blank" rel="noopener">Code <span>↗</span></a>`;
 
   const text = (p.fullDesc && p.fullDesc.trim()) ? p.fullDesc : p.desc;
   document.getElementById('post-desc').innerHTML =
