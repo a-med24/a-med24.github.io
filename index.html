@@ -364,6 +364,7 @@
   .post .close:hover{border-color:var(--ink);color:var(--ink)}
   .post-cover{width:100%;max-height:420px;overflow:hidden;background:var(--paper-2)}
   .post-cover img{width:100%;height:100%;max-height:420px;object-fit:cover;display:block}
+  .post-cover iframe{width:100%;aspect-ratio:16/9;max-height:420px;border:0;display:block}
   .post-body{padding-top:40px;padding-bottom:90px;max-width:760px}
   .post-no{font-family:var(--mono);font-size:.8rem;color:var(--cobalt);margin-bottom:8px}
   .post-body h2{font-family:var(--display);font-weight:700;font-size:clamp(1.8rem,4vw,2.6rem);letter-spacing:-.015em;margin-bottom:14px}
@@ -621,7 +622,8 @@
       <button class="close" id="postClose" aria-label="Close">✕</button>
     </div>
     <div class="post-cover" id="post-cover" style="display:none">
-      <img id="post-cover-img" src="" alt="">
+      <img id="post-cover-img" src="" alt="" style="display:none">
+      <iframe id="post-cover-iframe" src="" title="Project video" style="display:none" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
     </div>
     <div class="post-body wrap">
       <div class="post-no" id="post-no"></div>
@@ -662,6 +664,12 @@ const PROJECTS = [
     code: "https://github.com/a-med24/Checkers",
     icon: "assets/icons/SakuraChecker1Crown.png",
     iconZoom: 1.8, // bump to 1.3–1.8 if this logo looks small in its frame
+    iconFocusX: 0.5, // 0 = crop from the left edge of the image, 1 = right edge
+    iconFocusY: 0.5, // 0 = crop from the top edge, 1 = bottom edge. Nudge these
+                      // (e.g. 0.4) if the zoomed-in crop isn't centered on the
+                      // actual artwork — the zoom crops in tight, so if the
+                      // crown/piece sits off-center in the source PNG itself,
+                      // this is what re-centers it.
     images: [],
     fullDesc: "Checkers is a client-server multiplayer game built in Java, pairing a multithreaded TCP server with a JavaFX desktop client. The server accepts connections, spins up a dedicated thread per player, queues players for matchmaking, and manages active game sessions — all communication is handled through a custom serializable message protocol covering login, moves, chat, rematches, and disconnects. Game state and rule enforcement live entirely in a server-authoritative checkers engine that handles legal move validation, mandatory jumps, chained multi-jump captures, king promotion, and win/draw detection, so both clients always see a consistent, validated board. On the client side, players log in, see a live list of other connected users, chat in a shared lobby or privately, get matched into a game, and play on a fully rendered board that supports four selectable visual themes (Default, Sakura, Ocean, and Wicked) with matching king-piece artwork. A separate server admin window shows a live activity log of connections, moves, and disconnects. The project demonstrates client-server network programming, multithreaded server design, and implementing non-trivial game logic (chain captures, king rules, turn management) cleanly separated from the UI."
   },
@@ -769,13 +777,22 @@ const characterImgLeft  = loadImg(CHARACTER_SRC_LEFT);
 document.getElementById('year').textContent = new Date().getFullYear();
 const fmt = (n) => String(n).padStart(2,'0');
 
+// Pulls the 11-character video ID out of common YouTube URL shapes
+// (watch?v=, youtu.be/, embed/) so a "live" link that's a YouTube video
+// can be shown as a real embedded preview instead of just a text link.
+function getYouTubeId(url){
+  if(!url) return null;
+  const m = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([a-zA-Z0-9_-]{11})/);
+  return m ? m[1] : null;
+}
+
 /* ---------- Build READ-mode cards ---------- */
 const cards = document.getElementById('cards');
 PROJECTS.forEach((p,i)=>{
   const el = document.createElement('article');
   el.className = 'card';
   el.innerHTML = `
-    ${p.icon ? `<div class="card-icon"><img class="card-icon-img" src="${p.icon}" alt="" loading="lazy" style="transform:scale(${p.iconZoom||1})" onerror="this.parentElement.remove()"></div>` : ''}
+    ${p.icon ? `<div class="card-icon"><img class="card-icon-img" src="${p.icon}" alt="" loading="lazy" style="object-position:${(p.iconFocusX!=null?p.iconFocusX*100:50)}% ${(p.iconFocusY!=null?p.iconFocusY*100:50)}%;transform:scale(${p.iconZoom||1})" onerror="this.parentElement.remove()"></div>` : ''}
     <div class="card-no">P${fmt(i+1)}</div>
     <h3>${p.name}</h3>
     <p>${p.desc}</p>
@@ -835,7 +852,12 @@ function openModal(i){
   const p = PROJECTS[i];
   const mIcon = document.getElementById('m-icon');
   const mIconWrap = document.getElementById('m-icon-wrap');
-  if(p.icon){ mIcon.src = p.icon; mIcon.style.transform = `scale(${p.iconZoom||1})`; mIconWrap.style.display = 'block'; }
+  if(p.icon){
+    mIcon.src = p.icon;
+    mIcon.style.objectPosition = `${p.iconFocusX!=null?p.iconFocusX*100:50}% ${p.iconFocusY!=null?p.iconFocusY*100:50}%`;
+    mIcon.style.transform = `scale(${p.iconZoom||1})`;
+    mIconWrap.style.display = 'block';
+  }
   else { mIconWrap.style.display = 'none'; }
   const mLive = document.getElementById('m-live');
   if(p.live){ mLive.href = p.live; mLive.classList.add('show'); }
@@ -875,10 +897,23 @@ function openPost(i){
 
   const cover = document.getElementById('post-cover');
   const coverImg = document.getElementById('post-cover-img');
+  const coverFrame = document.getElementById('post-cover-iframe');
+  const ytId = getYouTubeId(p.live);
   if(p.images && p.images.length){
     coverImg.src = p.images[0];
+    coverImg.style.display = 'block';
+    coverFrame.style.display = 'none';
+    coverFrame.src = '';
+    cover.style.display = 'block';
+  } else if(ytId){
+    coverFrame.src = `https://www.youtube-nocookie.com/embed/${ytId}`;
+    coverFrame.style.display = 'block';
+    coverImg.style.display = 'none';
+    coverImg.src = '';
     cover.style.display = 'block';
   } else {
+    coverImg.src = '';
+    coverFrame.src = '';
     cover.style.display = 'none';
   }
 
@@ -909,6 +944,7 @@ function openPost(i){
 }
 function closePost(){
   post.classList.remove('on');
+  document.getElementById('post-cover-iframe').src = ''; // stop playback
   game.paused = false;
   if(playOn) canvas.focus();
   if(lastFocusPost && lastFocusPost.focus) lastFocusPost.focus();
@@ -1023,7 +1059,7 @@ const stations = PROJECTS.map((p,i)=>{
   const group = dateGroups[v];
   const slot = group.indexOf(i);
   const fx = clampX(clampX(p.x) + (slot - (group.length-1)/2) * STATION_X_NUDGE);
-  return { i, fx, fy:yFromDate(v), px:0, py:0, visited:false, iconImg: loadImg(p.icon), iconZoom: p.iconZoom||1, date:v };
+  return { i, fx, fy:yFromDate(v), px:0, py:0, visited:false, iconImg: loadImg(p.icon), iconZoom: p.iconZoom||1, iconFocusX: (typeof p.iconFocusX==='number')?p.iconFocusX:0.5, iconFocusY: (typeof p.iconFocusY==='number')?p.iconFocusY:0.5, date:v };
 });
 
 // one gridline per whole year spanning the full range, so the canvas
@@ -1360,12 +1396,20 @@ function draw(){
   // source image isn't perfectly square. Optional `zoom` (>1) crops in
   // further from center — useful when a source image has a lot of empty
   // padding around the actual logo/art.
-  function drawImageCentered(img, cx, cy, size, zoom){
+  function drawImageCentered(img, cx, cy, size, zoom, focusX, focusY){
     zoom = zoom || 1;
+    focusX = (typeof focusX === 'number') ? focusX : 0.5;
+    focusY = (typeof focusY === 'number') ? focusY : 0.5;
     const iw = img.naturalWidth || img.width, ih = img.naturalHeight || img.height;
     if(!iw || !ih){ ctx.drawImage(img, cx-size/2, cy-size/2, size, size); return; }
     const side = Math.min(iw, ih) / zoom;
-    const sx = (iw-side)/2, sy = (ih-side)/2;
+    // crop window centered on (focusX, focusY) of the source instead of
+    // dead-center, clamped so it never runs past the image edges — lets
+    // off-center artwork (e.g. a logo whose art sits above its own
+    // padding) be nudged into the visible circle via iconFocusX/Y.
+    let sx = iw*focusX - side/2, sy = ih*focusY - side/2;
+    sx = Math.max(0, Math.min(iw-side, sx));
+    sy = Math.max(0, Math.min(ih-side, sy));
     ctx.drawImage(img, sx, sy, side, side, cx-size/2, cy-size/2, size, size);
   }
 
@@ -1468,7 +1512,7 @@ function draw(){
     if(hasIcon){
       ctx.save();
       ctx.beginPath(); ctx.arc(s.px,s.py,R,0,7); ctx.closePath(); ctx.clip();
-      drawImageCentered(s.iconImg, s.px, s.py, R*2, s.iconZoom);
+      drawImageCentered(s.iconImg, s.px, s.py, R*2, s.iconZoom, s.iconFocusX, s.iconFocusY);
       ctx.restore();
     } else {
       ctx.beginPath(); ctx.arc(s.px,s.py,9,0,7);
