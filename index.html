@@ -663,13 +663,7 @@ const PROJECTS = [
     live: "",
     code: "https://github.com/a-med24/Checkers",
     icon: "assets/icons/SakuraChecker1Crown.png",
-    iconZoom: 1.8, // bump to 1.3–1.8 if this logo looks small in its frame
-    iconFocusX: 0.7, // 0 = crop from the left edge of the image, 1 = right edge
-    iconFocusY: 0.7, // 0 = crop from the top edge, 1 = bottom edge. Nudge these
-                      // (e.g. 0.4) if the zoomed-in crop isn't centered on the
-                      // actual artwork — the zoom crops in tight, so if the
-                      // crown/piece sits off-center in the source PNG itself,
-                      // this is what re-centers it.
+    iconZoom: 1.8, // bump if this logo looks small in its frame
     images: [],
     fullDesc: "Checkers is a client-server multiplayer game built in Java, pairing a multithreaded TCP server with a JavaFX desktop client. The server accepts connections, spins up a dedicated thread per player, queues players for matchmaking, and manages active game sessions — all communication is handled through a custom serializable message protocol covering login, moves, chat, rematches, and disconnects. Game state and rule enforcement live entirely in a server-authoritative checkers engine that handles legal move validation, mandatory jumps, chained multi-jump captures, king promotion, and win/draw detection, so both clients always see a consistent, validated board. On the client side, players log in, see a live list of other connected users, chat in a shared lobby or privately, get matched into a game, and play on a fully rendered board that supports four selectable visual themes (Default, Sakura, Ocean, and Wicked) with matching king-piece artwork. A separate server admin window shows a live activity log of connections, moves, and disconnects. The project demonstrates client-server network programming, multithreaded server design, and implementing non-trivial game logic (chain captures, king rules, turn management) cleanly separated from the UI."
   },
@@ -792,7 +786,7 @@ PROJECTS.forEach((p,i)=>{
   const el = document.createElement('article');
   el.className = 'card';
   el.innerHTML = `
-    ${p.icon ? `<div class="card-icon"><img class="card-icon-img" src="${p.icon}" alt="" loading="lazy" style="object-position:${(p.iconFocusX!=null?p.iconFocusX*100:50)}% ${(p.iconFocusY!=null?p.iconFocusY*100:50)}%;transform:scale(${p.iconZoom||1})" onerror="this.parentElement.remove()"></div>` : ''}
+    ${p.icon ? `<div class="card-icon"><img class="card-icon-img" src="${p.icon}" alt="" loading="lazy" style="transform:scale(${p.iconZoom||1})" onerror="this.parentElement.remove()"></div>` : ''}
     <div class="card-no">P${fmt(i+1)}</div>
     <h3>${p.name}</h3>
     <p>${p.desc}</p>
@@ -854,7 +848,6 @@ function openModal(i){
   const mIconWrap = document.getElementById('m-icon-wrap');
   if(p.icon){
     mIcon.src = p.icon;
-    mIcon.style.objectPosition = `${p.iconFocusX!=null?p.iconFocusX*100:50}% ${p.iconFocusY!=null?p.iconFocusY*100:50}%`;
     mIcon.style.transform = `scale(${p.iconZoom||1})`;
     mIconWrap.style.display = 'block';
   }
@@ -1059,7 +1052,7 @@ const stations = PROJECTS.map((p,i)=>{
   const group = dateGroups[v];
   const slot = group.indexOf(i);
   const fx = clampX(clampX(p.x) + (slot - (group.length-1)/2) * STATION_X_NUDGE);
-  return { i, fx, fy:yFromDate(v), px:0, py:0, visited:false, iconImg: loadImg(p.icon), iconZoom: p.iconZoom||1, iconFocusX: (typeof p.iconFocusX==='number')?p.iconFocusX:0.5, iconFocusY: (typeof p.iconFocusY==='number')?p.iconFocusY:0.5, date:v };
+  return { i, fx, fy:yFromDate(v), px:0, py:0, visited:false, iconImg: loadImg(p.icon), iconZoom: p.iconZoom||1, date:v };
 });
 
 // one gridline per whole year spanning the full range, so the canvas
@@ -1396,20 +1389,12 @@ function draw(){
   // source image isn't perfectly square. Optional `zoom` (>1) crops in
   // further from center — useful when a source image has a lot of empty
   // padding around the actual logo/art.
-  function drawImageCentered(img, cx, cy, size, zoom, focusX, focusY){
+  function drawImageCentered(img, cx, cy, size, zoom){
     zoom = zoom || 1;
-    focusX = (typeof focusX === 'number') ? focusX : 0.5;
-    focusY = (typeof focusY === 'number') ? focusY : 0.5;
     const iw = img.naturalWidth || img.width, ih = img.naturalHeight || img.height;
     if(!iw || !ih){ ctx.drawImage(img, cx-size/2, cy-size/2, size, size); return; }
     const side = Math.min(iw, ih) / zoom;
-    // crop window centered on (focusX, focusY) of the source instead of
-    // dead-center, clamped so it never runs past the image edges — lets
-    // off-center artwork (e.g. a logo whose art sits above its own
-    // padding) be nudged into the visible circle via iconFocusX/Y.
-    let sx = iw*focusX - side/2, sy = ih*focusY - side/2;
-    sx = Math.max(0, Math.min(iw-side, sx));
-    sy = Math.max(0, Math.min(ih-side, sy));
+    const sx = (iw-side)/2, sy = (ih-side)/2;
     ctx.drawImage(img, sx, sy, side, side, cx-size/2, cy-size/2, size, size);
   }
 
@@ -1512,7 +1497,7 @@ function draw(){
     if(hasIcon){
       ctx.save();
       ctx.beginPath(); ctx.arc(s.px,s.py,R,0,7); ctx.closePath(); ctx.clip();
-      drawImageCentered(s.iconImg, s.px, s.py, R*2, s.iconZoom, s.iconFocusX, s.iconFocusY);
+      drawImageCentered(s.iconImg, s.px, s.py, R*2, s.iconZoom);
       ctx.restore();
     } else {
       ctx.beginPath(); ctx.arc(s.px,s.py,9,0,7);
