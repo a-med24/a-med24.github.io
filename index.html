@@ -9,31 +9,25 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,500;12..96,600;12..96,700;12..96,800&family=Sora:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
 <style>
-  /* ============================================================
-     DESIGN TOKENS
-     Read mode = daylight paper. Play mode = a glowing plot canvas.
-     One accent for "serious" (cobalt), one for "play" (amber).
-     ============================================================ */
+  /* design tokens */
   :root{
-    --ink:#2C3531;         /* primary text / charcoal-teal          */
-    --ink-2:#154139;       /* game canvas base — brighter deep teal, not near-black */
-    --paper:#e3fff1;       /* page background, bright airy mint     */
-    --paper-2:#D9F0E5;     /* subtle panel fill                     */
-    --slate:#47564F;       /* secondary text                        */
-    --line:#BFE3D3;        /* hairlines / borders                   */
-    --cobalt:#0E9284;      /* primary accent: links, key UI (bright teal) */
-    --cobalt-ink:#0A6259;  /* darker teal for text on light         */
-    --amber:#FFCB9A;       /* playful accent: the player, wins (peach) */
+    --ink:#2C3531;
+    --ink-2:#154139;
+    --paper:#e3fff1;
+    --paper-2:#D9F0E5;
+    --slate:#47564F;
+    --line:#BFE3D3;
+    --cobalt:#0E9284;
+    --cobalt-ink:#0A6259;
+    --amber:#FFCB9A;
     --amber-deep:#E8AE79;
 
-    /* extra swatches for colorful accents (tags, chips, data-viz feel) */
-    --c1:#12A296;  /* teal    */
-    --c2:#E0B078;  /* sand    */
-    --c3:#FFC98F;  /* peach   */
-    --c4:#3D4A44;  /* charcoal (lightened) */
-    --c5:#0E7A70;  /* deep teal */
-    /* darker, readable text pairing for each swatch above — the light
-       sand/peach tones are used for fills only, never for text */
+    --c1:#12A296;
+    --c2:#E0B078;
+    --c3:#FFC98F;
+    --c4:#3D4A44;
+    --c5:#0E7A70;
+    /* -ink variants are darker text-safe pairings for each swatch */
     --c1-ink:#0A6259;
     --c2-ink:#6B4A28;
     --c3-ink:#7A3E15;
@@ -62,7 +56,7 @@
   ::selection{background:var(--amber);color:var(--ink)}
   :focus-visible{outline:2.5px solid var(--cobalt);outline-offset:3px;border-radius:4px}
 
-  /* ---------- HEADER ---------- */
+  /* header */
   header{
     position:sticky;top:0;z-index:40;
     display:flex;align-items:center;justify-content:space-between;
@@ -75,7 +69,7 @@
   .brand .pt{color:var(--cobalt)}
   .brand .blink{color:var(--amber)}
 
-  /* ---------- MODE TOGGLE ---------- */
+  /* mode toggle */
   .toggle{
     display:inline-flex;background:var(--paper-2);
     border:1px solid var(--line);border-radius:999px;padding:3px;
@@ -90,9 +84,7 @@
   .toggle button.on{color:#fff;background:var(--ink)}
   .toggle button.on.play{background:var(--cobalt)}
 
-  /* ============================================================
-     READ MODE
-     ============================================================ */
+  /* read mode */
   main#read{display:block}
   .wrap{max-width:var(--maxw);margin:0 auto;padding:0 clamp(18px,5vw,48px)}
   .eyebrow{
@@ -249,9 +241,34 @@
   .footer-contact a{color:var(--slate);transition:color .2s}
   .footer-contact a:hover{color:var(--cobalt)}
 
-  /* ============================================================
-     PLAY MODE
-     ============================================================ */
+  /* EVENTS (hackathons / CTFs / conferences) */
+  .event-cover{width:100%;aspect-ratio:16/10;border-radius:10px;overflow:hidden;background:var(--paper-2);border:1px solid var(--line)}
+  .event-cover img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .3s}
+  .event-card:hover .event-cover img{transform:scale(1.04)}
+  .event-meta{font-family:var(--mono);font-size:.78rem;color:var(--cobalt-ink);margin-top:-6px}
+  .view-gallery{cursor:pointer}
+
+  /* PHOTO LIGHTBOX */
+  .lightbox{position:fixed;inset:0;z-index:80;display:none;align-items:center;justify-content:center;padding:20px;background:rgba(8,20,17,.9);backdrop-filter:blur(4px)}
+  .lightbox.on{display:flex}
+  .lightbox-inner{max-width:920px;width:100%;display:flex;flex-direction:column;gap:14px;animation:rise .3s cubic-bezier(.2,.7,.2,1)}
+  .lightbox-stage{position:relative;width:100%;aspect-ratio:16/10;background:#0E322C;border-radius:14px;overflow:hidden;display:flex;align-items:center;justify-content:center;border:1px solid #1E5A4F}
+  .lightbox-stage img{width:100%;height:100%;object-fit:contain;display:block}
+  .lightbox-nav{position:absolute;top:50%;transform:translateY(-50%);appearance:none;border:1px solid rgba(255,255,255,.25);background:rgba(0,0,0,.45);color:#fff;width:42px;height:42px;border-radius:50%;font-size:1.3rem;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center}
+  .lightbox-nav:hover{background:var(--cobalt);border-color:var(--cobalt)}
+  .lightbox-nav.prev{left:12px}
+  .lightbox-nav.next{right:12px}
+  .lightbox-close{position:absolute;top:12px;right:12px;background:rgba(0,0,0,.45);border:1px solid rgba(255,255,255,.25);color:#fff;width:34px;height:34px;border-radius:50%;cursor:pointer;font-size:1rem}
+  .lightbox-close:hover{border-color:var(--amber);color:var(--amber)}
+  .lightbox-info h3{font-family:var(--display);font-weight:700;font-size:1.2rem;color:#fff}
+  .lightbox-caption{font-family:var(--mono);font-size:.8rem;color:#9FDCCB;margin-top:4px}
+  .lightbox-count{font-family:var(--mono);font-size:.78rem;color:#8FCBBB}
+  .lightbox-thumbs{display:flex;gap:8px;overflow-x:auto;padding-bottom:2px}
+  .lightbox-thumbs img{width:64px;height:48px;object-fit:cover;border-radius:6px;cursor:pointer;opacity:.5;border:2px solid transparent;flex:none;transition:opacity .15s, border-color .15s}
+  .lightbox-thumbs img:hover{opacity:.85}
+  .lightbox-thumbs img.active{opacity:1;border-color:var(--amber)}
+
+  /* play mode */
   main#play{display:none;position:relative;background:var(--ink-2)}
   main#play.show{display:block}
   .stage{position:relative;width:100%;height:calc(100vh - 59px);height:calc(100dvh - 59px);min-height:460px;overscroll-behavior:none}
@@ -323,9 +340,7 @@
   .win button{appearance:none;border:0;cursor:pointer;font-family:var(--mono);font-weight:700;font-size:.8rem;background:var(--cobalt);color:#fff;padding:11px 20px;border-radius:999px}
   .win button#winBack{background:var(--paper-2);color:var(--ink);border:1px solid var(--line)}
 
-  /* ============================================================
-     SHARED MODAL (used by both modes)
-     ============================================================ */
+  /* shared modal (used by both modes) */
   .modal{position:fixed;inset:0;z-index:60;display:none;align-items:center;justify-content:center;padding:20px;background:rgba(11,17,32,.62);backdrop-filter:blur(4px)}
   .modal.on{display:flex}
   .sheet{background:var(--paper);border-radius:18px;max-width:520px;width:100%;padding:30px 30px 26px;position:relative;border:1px solid var(--line);box-shadow:0 30px 80px -30px rgba(0,0,0,.6);animation:rise .3s cubic-bezier(.2,.7,.2,1)}
@@ -346,11 +361,7 @@
   .sheet p{color:var(--slate);margin-bottom:16px}
   .sheet .tags{margin-bottom:18px}
 
-  /* ============================================================
-     FULL PROJECT POST — a dedicated article view with a cover
-     photo, full write-up, and gallery. Opened from a card or the
-     quick-look popup via "Read full post".
-     ============================================================ */
+  /* full project post view */
   .post{position:fixed;inset:0;z-index:70;display:none;background:var(--paper);overflow-y:auto}
   .post.on{display:block}
   .post-bar{
@@ -377,7 +388,7 @@
   .post-gallery{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px;margin-top:38px}
   .post-gallery img{width:100%;aspect-ratio:4/3;border-radius:12px;border:1px solid var(--line);object-fit:cover;background:var(--paper-2)}
 
-  /* ---------- RESPONSIVE ---------- */
+  /* responsive */
   @media(max-width:720px){
     .about-grid{grid-template-columns:1fr}
     .about-side{order:-1;margin-bottom:8px}
@@ -391,7 +402,7 @@
     .post-cover img{max-height:260px}
   }
 
-  /* ---------- REDUCED MOTION ---------- */
+  /* reduced motion */
   @media(prefers-reduced-motion:reduce){
     *{animation-duration:.001ms !important;animation-iteration-count:1 !important;transition-duration:.001ms !important}
     html{scroll-behavior:auto}
@@ -410,7 +421,7 @@
   </div>
 </header>
 
-<!-- ============================== READ MODE ============================== -->
+<!-- read mode -->
 <main id="read">
   <a id="top"></a>
 
@@ -473,6 +484,13 @@
     </div>
   </section>
 
+  <section class="block" id="events">
+    <div class="wrap">
+      <div class="sec-head"><h2>Events</h2></div>
+      <div class="grid" id="event-cards"><!-- injected from EVENTS --></div>
+    </div>
+  </section>
+
   <section class="block" id="resume">
   <div class="wrap">
     <div class="sec-head"><h2>Resume</h2></div>
@@ -494,7 +512,6 @@
         </div>
       </div>
 
-      <!-- Internship as its own row -->
       <div class="tl">
         <div class="when">
           <img class="tl-icon" src="assets/logos/Q-Next-logo.png" alt="" onerror="this.remove()">
@@ -555,7 +572,7 @@
   </footer>
 </main>
 
-<!-- ============================== PLAY MODE ============================== -->
+<!-- play mode -->
 <main id="play" aria-hidden="true">
   <div class="stage">
     <canvas id="world"></canvas>
@@ -597,7 +614,7 @@
   </div>
 </main>
 
-<!-- ============================== SHARED MODAL ============================== -->
+<!-- shared modal -->
 <div class="modal" id="modal" role="dialog" aria-modal="true" aria-labelledby="m-title">
   <div class="sheet">
     <button class="close" id="mClose" aria-label="Close">✕</button>
@@ -614,7 +631,7 @@
   </div>
 </div>
 
-<!-- ============================== FULL PROJECT POST ============================== -->
+<!-- full project post -->
 <div class="post" id="post" role="dialog" aria-modal="true" aria-labelledby="post-title">
   <div class="post-inner">
     <div class="post-bar">
@@ -635,6 +652,26 @@
       <div class="post-desc" id="post-desc"></div>
       <div class="post-gallery" id="post-gallery"></div>
     </div>
+  </div>
+</div>
+
+<!-- event photo lightbox -->
+<div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-labelledby="lb-title">
+  <div class="lightbox-inner">
+    <div class="lightbox-stage">
+      <button class="lightbox-nav prev" id="lbPrev" aria-label="Previous photo">‹</button>
+      <img id="lb-img" src="" alt="">
+      <button class="lightbox-nav next" id="lbNext" aria-label="Next photo">›</button>
+      <button class="lightbox-close" id="lbClose" aria-label="Close">✕</button>
+    </div>
+    <div class="lightbox-info">
+      <div style="display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap">
+        <h3 id="lb-title"></h3>
+        <span class="lightbox-count" id="lb-count"></span>
+      </div>
+      <div class="lightbox-caption" id="lb-caption"></div>
+    </div>
+    <div class="lightbox-thumbs" id="lb-thumbs"></div>
   </div>
 </div>
 
@@ -706,22 +743,11 @@ const PROJECTS = [
   },
 ];
 
-/* ================================================================
-   IN_PROGRESS — things you're actively building, shown in their own
-   "In progress" section on the reading side (not part of the game).
-   FIELDS
-     name — project title
-     desc — a sentence or two on what it is / where it's headed
-     tags — array of short strings, same colorful chips as PROJECTS
-     status — short text shown as a pulsing badge, e.g. "Started March 2026"
-     live, code — OPTIONAL links, e.g. an early demo or public repo.
-             Leave "" to hide that link entirely.
-   Delete the placeholder entry once you add a real one.
-   ================================================================ */
+// IN_PROGRESS fields: name, desc, tags, status (badge text), live/code (optional, "" to hide)
 const IN_PROGRESS = [
   {
     name: "SmartStock",
-    desc: "An application primarily focused on aiding people with maintaining inventory of their pantry/fridge.",
+    desc: "Pantry/fridge inventory tracker.",
     tags: ["React", "JavaScript"],
     status: "In progress",
     live: "",
@@ -729,18 +755,7 @@ const IN_PROGRESS = [
   },
 ];
 
-/* ================================================================
-   CERTIFICATIONS — shown as small chips in the Resume section.
-   FIELDS
-     name — certification title
-     issuer — who issued it (shown as small text under the name)
-     date — OPTIONAL, any short string (e.g. "2025" or "Issued May 2026")
-     url — OPTIONAL link to the credential — a PDF works great here
-             (e.g. "assets/certifications/your-cert.pdf"). Opens in a
-             new tab. Leave "" for a non-clickable chip.
-     icon — OPTIONAL small logo image. Leave "" for no icon.
-   Delete the placeholder entry once you add a real one.
-   ================================================================ */
+// CERTIFICATIONS fields: name, issuer, date (optional), url (optional PDF/link), icon (optional)
 const CERTIFICATIONS = [
   {
     name: "Microsoft 365 Fundamentals Specialization",
@@ -758,8 +773,19 @@ const CERTIFICATIONS = [
   },
 ];
 
-/* ---------- Custom art (optional) ----------
-*/
+// EVENTS fields: name, date, location (optional), desc, tags (optional), images (first = cover photo)
+const EVENTS = [
+  {
+    name: "SparkHacks 2026",
+    date: "2026-03",
+    location: "University of Illinois at Chicago",
+    desc: "UIC hackathon — built LitQuest, a literacy-focused visual novel app.",
+    tags: ["Hackathon", "Team project"],
+    images: []
+  },
+];
+
+/* custom art (optional) */
 const CHARACTER_SRC_RIGHT = "assets/character-right.png";
 const CHARACTER_SRC_LEFT  = "assets/character-left.png";
 
@@ -778,16 +804,14 @@ const characterImgLeft  = loadImg(CHARACTER_SRC_LEFT);
 document.getElementById('year').textContent = new Date().getFullYear();
 const fmt = (n) => String(n).padStart(2,'0');
 
-// Pulls the 11-character video ID out of common YouTube URL shapes
-// (watch?v=, youtu.be/, embed/) so a "live" link that's a YouTube video
-// can be shown as a real embedded preview instead of just a text link.
+// pulls the video ID out of a YouTube URL so it can be embedded
 function getYouTubeId(url){
   if(!url) return null;
   const m = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([a-zA-Z0-9_-]{11})/);
   return m ? m[1] : null;
 }
 
-/* ---------- Build READ-mode cards ---------- */
+/* build read-mode cards */
 const cards = document.getElementById('cards');
 PROJECTS.forEach((p,i)=>{
   const el = document.createElement('article');
@@ -812,7 +836,7 @@ cards.addEventListener('click', e=>{
   openPost(Number(link.dataset.i));
 });
 
-/* ---------- Build READ-mode In Progress cards ---------- */
+/* build read-mode in progress cards */
 const progressCards = document.getElementById('progress-cards');
 IN_PROGRESS.forEach(p=>{
   const el = document.createElement('article');
@@ -830,7 +854,7 @@ IN_PROGRESS.forEach(p=>{
   progressCards.appendChild(el);
 });
 
-/* ---------- Build Certifications chips ---------- */
+/* build certifications chips */
 const certList = document.getElementById('cert-list');
 CERTIFICATIONS.forEach(c=>{
   const tag = c.url ? 'a' : 'div';
@@ -846,7 +870,36 @@ CERTIFICATIONS.forEach(c=>{
   certList.appendChild(el);
 });
 
-/* ---------- Shared modal ---------- */
+/* build events cards */
+const eventCards = document.getElementById('event-cards');
+function renderEventCards(){
+  eventCards.innerHTML = '';
+  EVENTS.forEach((ev,i)=>{
+    const el = document.createElement('article');
+    el.className = 'card event-card';
+    const cover = ev.images && ev.images[0];
+    const dateLabel = formatDateValue(dateValue(ev));
+    const galleryLabel = (ev.images && ev.images.length > 1) ? 'View photos' : 'View photo';
+    el.innerHTML = `
+      ${cover ? `<div class="event-cover"><img src="${cover}" alt="" loading="lazy" onerror="this.parentElement.remove()"></div>` : ''}
+      ${dateLabel ? `<div class="card-no">${dateLabel}</div>` : ''}
+      <h3>${ev.name}</h3>
+      ${ev.location ? `<div class="event-meta">${ev.location}</div>` : ''}
+      <p>${ev.desc || ''}</p>
+      ${ev.tags && ev.tags.length ? `<div class="tags">${ev.tags.map(t=>`<span class="tag">${t}</span>`).join('')}</div>` : ''}
+      ${ev.images && ev.images.length ? `<div class="card-links"><a href="#" class="view-gallery" data-i="${i}">${galleryLabel} <span>↗</span></a></div>` : ''}`;
+    eventCards.appendChild(el);
+  });
+}
+renderEventCards();
+eventCards.addEventListener('click', e=>{
+  const link = e.target.closest('.view-gallery');
+  if(!link) return;
+  e.preventDefault();
+  openLightbox(Number(link.dataset.i));
+});
+
+/* shared modal */
 const modal = document.getElementById('modal');
 let lastFocus = null;
 function openModal(i){
@@ -888,7 +941,7 @@ modal.addEventListener('click', e=>{
   if(link){ e.preventDefault(); openPost(Number(link.dataset.i)); }
 });
 
-/* ---------- Full project post ---------- */
+/* full project post */
 const post = document.getElementById('post');
 let lastFocusPost = null;
 function openPost(i){
@@ -956,7 +1009,67 @@ window.addEventListener('keydown', e=>{
   if(e.key==='Escape' || e.key==='e' || e.key==='E' || e.key==='Enter'){ e.preventDefault(); closePost(); }
 });
 
-/* ---------- Mode toggle ---------- */
+/* event photo lightbox */
+const lightbox = document.getElementById('lightbox');
+let lastFocusLightbox = null;
+let lbEventIndex = -1, lbImgIndex = 0;
+function renderLightbox(){
+  const ev = EVENTS[lbEventIndex];
+  const imgs = (ev && ev.images) || [];
+  const showNav = imgs.length > 1;
+  document.getElementById('lb-img').src = imgs[lbImgIndex] || '';
+  document.getElementById('lb-title').textContent = ev ? ev.name : '';
+  document.getElementById('lb-caption').textContent = ev
+    ? [formatDateValue(dateValue(ev)), ev.location].filter(Boolean).join(' · ')
+    : '';
+  document.getElementById('lb-count').textContent = showNav ? `${lbImgIndex+1} / ${imgs.length}` : '';
+  document.getElementById('lbPrev').style.display = showNav ? 'flex' : 'none';
+  document.getElementById('lbNext').style.display = showNav ? 'flex' : 'none';
+  document.getElementById('lb-thumbs').innerHTML = showNav
+    ? imgs.map((src,idx)=>`<img src="${src}" data-idx="${idx}" class="${idx===lbImgIndex?'active':''}" alt="">`).join('')
+    : '';
+}
+function openLightbox(i, imgIdx){
+  const ev = EVENTS[i];
+  if(!ev || !ev.images || !ev.images.length) return;
+  lbEventIndex = i;
+  lbImgIndex = imgIdx || 0;
+  renderLightbox();
+  lastFocusLightbox = document.activeElement;
+  lightbox.classList.add('on');
+  document.getElementById('lbClose').focus();
+  game.paused = true;
+}
+function closeLightbox(){
+  lightbox.classList.remove('on');
+  game.paused = false;
+  if(playOn) canvas.focus();
+  if(lastFocusLightbox && lastFocusLightbox.focus) lastFocusLightbox.focus();
+}
+function lbStep(delta){
+  const ev = EVENTS[lbEventIndex];
+  if(!ev || !ev.images || ev.images.length < 2) return;
+  lbImgIndex = (lbImgIndex + delta + ev.images.length) % ev.images.length;
+  renderLightbox();
+}
+document.getElementById('lbClose').addEventListener('click', closeLightbox);
+document.getElementById('lbNext').addEventListener('click', ()=>lbStep(1));
+document.getElementById('lbPrev').addEventListener('click', ()=>lbStep(-1));
+document.getElementById('lb-thumbs').addEventListener('click', e=>{
+  const img = e.target.closest('img[data-idx]');
+  if(!img) return;
+  lbImgIndex = Number(img.dataset.idx);
+  renderLightbox();
+});
+lightbox.addEventListener('click', e=>{ if(e.target===lightbox) closeLightbox(); });
+window.addEventListener('keydown', e=>{
+  if(!lightbox.classList.contains('on')) return;
+  if(e.key==='Escape'){ e.preventDefault(); closeLightbox(); }
+  else if(e.key==='ArrowRight'){ e.preventDefault(); lbStep(1); }
+  else if(e.key==='ArrowLeft'){ e.preventDefault(); lbStep(-1); }
+});
+
+/* mode toggle */
 const readEl = document.getElementById('read');
 const playEl = document.getElementById('play');
 const tabRead = document.getElementById('tab-read');
@@ -985,10 +1098,7 @@ tabRead.addEventListener('click', ()=>setMode(false));
 tabPlay.addEventListener('click', ()=>setMode(true));
 document.getElementById('heroPlayBtn').addEventListener('click', ()=>setMode(true));
 
-/* ================================================================
-   PLAY MODE — a top-down "plot canvas" you walk across.
-   Projects are plotted points; reach one and press E to open it.
-   ================================================================ */
+// play mode: top-down canvas, projects are plotted points, walk up + press E to open
 const canvas = document.getElementById('world');
 const ctx = canvas.getContext('2d');
 canvas.tabIndex = 0;
@@ -996,11 +1106,7 @@ const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').match
 if('ontouchstart' in window || navigator.maxTouchPoints>0) document.body.classList.add('touch');
 
 let W=0, H=0, dpr=1;
-// The canvas is a vertical timeline: y is derived from each project's
-// date, not set by hand. A plain year (2026) or a "YYYY-MM" string
-// ("2026-03") both work — month precision positions the point
-// proportionally between that year and the next, so it automatically
-// lands earlier or later than other projects with no manual y needed.
+// y position is derived from a project's date (year, or "YYYY-MM" string)
 function dateValue(p){
   const d = p.date != null ? p.date : p.year; // p.year kept for backwards compat
   if(typeof d === 'number') return d;
@@ -1027,31 +1133,21 @@ const YEAR_MAX = DATE_VALUES.length ? Math.max(Math.ceil(Math.max(...DATE_VALUES
 const YEAR_PAD = 0.1; // keep the earliest/latest date off the very edge
 function yFromDate(value){
   if(typeof value !== 'number') return 0.5;
-  // Compress how far a date can drift toward the *next* year's line — a
-  // plain proportional month mapping puts anything from ~October onward
-  // almost on top of next year's gridline, making it read as belonging
-  // to the wrong year even though it's technically still in-bounds.
-  // Leaving a buffer keeps every date clearly inside its own year's band.
+  // compress late-year months so they don't crowd the next year's line
   const year = Math.floor(value);
   const monthFrac = value - year;
   const visualValue = year + monthFrac * 0.7;
   const t = (visualValue - YEAR_MIN) / (YEAR_MAX - YEAR_MIN);
   return YEAR_PAD + t * (1 - YEAR_PAD*2);
 }
-// x is free for design — set it per project, 0 to 1, to arrange points
-// left/right however looks good. It's clamped to a safe band around the
-// center so a project can never visually drift up into the row above it
-// or down into the row below, no matter how the rest of the layout
-// changes — x only ever moves sideways, never blurs the year it belongs to.
+// x is free per project (0-1, left/right placement), clamped to a safe band
 const STATION_X_DEFAULT = 0.5;
 const STATION_X_MIN = 0.14, STATION_X_MAX = 0.86;
 function clampX(x){
   const v = (typeof x === 'number') ? x : STATION_X_DEFAULT;
   return Math.min(STATION_X_MAX, Math.max(STATION_X_MIN, v));
 }
-// If more than one project lands on the exact same date, nudge them
-// apart slightly left/right so they don't sit exactly on top of each other.
-const STATION_X_NUDGE = 0.03;
+const STATION_X_NUDGE = 0.03; // spreads out projects sharing the same date
 const dateGroups = {};
 PROJECTS.forEach((p,i)=>{ const k=dateValue(p); (dateGroups[k] = dateGroups[k] || []).push(i); });
 const stations = PROJECTS.map((p,i)=>{
@@ -1062,44 +1158,25 @@ const stations = PROJECTS.map((p,i)=>{
   return { i, fx, fy:yFromDate(v), px:0, py:0, visited:false, iconImg: loadImg(p.icon), iconZoom: p.iconZoom||1, date:v };
 });
 
-// one gridline per whole year spanning the full range, so the canvas
-// reads as a continuous ruler rather than only marking years with data
-const TIMELINE_YEARS = [];
+const TIMELINE_YEARS = []; // one gridline per year
 for(let y=YEAR_MIN; y<=YEAR_MAX; y++) TIMELINE_YEARS.push(y);
 
-/* ---------- Year unlocking ----------
-   The character starts at the most recent year. Everything earlier is
-   locked behind a barrier — walk up to it, find the glowing key
-   somewhere in the area you already have access to, and grabbing it
-   unlocks the next year back, moving the barrier further up. Keeps
-   unlocking one year at a time until the earliest year is reached.
-*/
+// year unlocking: find the key to unlock the next year back, one at a time
 const PROJECT_YEARS = [...new Set(stations.map(s=>Math.floor(s.date)))].sort((a,b)=>a-b);
-const UNLOCK_ORDER = PROJECT_YEARS.slice().reverse(); // latest first — matches where the player starts
+const UNLOCK_ORDER = PROJECT_YEARS.slice().reverse();
 const START_YEAR = UNLOCK_ORDER[0];
 const ROW_MARGIN = 0.08;
 function frontierTopY(unlockIndex){
-  // how far up (toward earlier years) the player can currently roam
-  if(unlockIndex >= UNLOCK_ORDER.length-1) return 0; // every year unlocked
+  if(unlockIndex >= UNLOCK_ORDER.length-1) return 0;
   return Math.max(0, yFromDate(UNLOCK_ORDER[unlockIndex]) - ROW_MARGIN);
 }
 function keyPositionFor(unlockIndex){
-  // the key that unlocks the NEXT year sits within the area already
-  // reachable — i.e. in the row of the current frontier year
   const year = UNLOCK_ORDER[unlockIndex];
   const fx = 0.5 + (unlockIndex % 2 === 0 ? -0.2 : 0.2);
   return { fx, fy: yFromDate(year), targetYear: UNLOCK_ORDER[unlockIndex+1] };
 }
 
-/* ---------- Obstacles (optional) ----------
-   Simple static barriers on the canvas that block the player so
-   getting around takes a little navigation, not just a straight walk.
-   All positions are fractions of the canvas (0 to 1), so they hold up
-   at any screen size.
-   fx,fy — center of the obstacle
-   fw,fh — width/height
-   Add, remove, or reposition these freely.
-*/
+// obstacles: static barriers, fx/fy = center, fw/fh = size (all 0-1 fractions of canvas)
 const OBSTACLES = [
   { fx:0.30, fy:0.42, fw:0.13, fh:0.045 },
 ];
@@ -1109,11 +1186,7 @@ function obstacleRect(o){
   return { x0:cx-w/2, y0:cy-h/2, x1:cx+w/2, y1:cy+h/2, cx, cy, w, h };
 }
 
-/* ---------- Sound (lightweight, no audio files needed) ----------
-   Short synthesized tones via the Web Audio API. Browsers block audio
-   until a real user gesture, so the AudioContext is created lazily on
-   first key press / click rather than on page load.
-*/
+// sound: synthesized tones via Web Audio API, AudioContext created on first input
 let audioCtx = null;
 let soundOn = localStorage.getItem('dx_sound') !== 'off';
 function ensureAudio(){
@@ -1148,7 +1221,7 @@ muteBtn.addEventListener('click', ()=>{
   if(soundOn){ ensureAudio(); beep(660,.08,'triangle',.15); }
 });
 
-/* ---------- Toast notifications ---------- */
+/* toast notifications */
 const toastEl = document.getElementById('toast');
 function toast(msg){
   const el = document.createElement('div');
@@ -1183,7 +1256,7 @@ function fmtTime(sec){
   return `${m}:${String(s).padStart(2,'0')}`;
 }
 
-/* ---------- Objectives checklist ---------- */
+/* objectives checklist */
 const objectivesEl = document.getElementById('objectives');
 function renderObjectives(){
   objectivesEl.innerHTML = stations.map(s=>
@@ -1215,7 +1288,7 @@ window.addEventListener('resize', ()=>{
 const keys = {};
 const KEYMAP = {ArrowUp:'up',ArrowDown:'down',ArrowLeft:'left',ArrowRight:'right',w:'up',s:'down',a:'left',d:'right',W:'up',S:'down',A:'left',D:'right'};
 const winEl = document.getElementById('win');
-function inputBlocked(){ return modal.classList.contains('on') || winEl.classList.contains('on'); }
+function inputBlocked(){ return modal.classList.contains('on') || winEl.classList.contains('on') || lightbox.classList.contains('on'); }
 window.addEventListener('keydown', e=>{
   if(!playOn) return;
   if(modal.classList.contains('on')){
@@ -1356,7 +1429,7 @@ function update(dt){
     if(!rects.some(rect=>circleHitsRect(game.player.px, ny, r, rect))) game.player.py = ny;
     else if(vy) bumpEffect();
   }
-  // face left/right based on horizontal movement; keep last facing on pure vertical moves
+  // face left/right on horizontal movement only
   if(vx<0) game.player.facing='left';
   else if(vx>0) game.player.facing='right';
 
@@ -1390,12 +1463,7 @@ function draw(){
     ctx.translate((Math.random()-0.5)*game.shakeMag*k, (Math.random()-0.5)*game.shakeMag*k);
   }
 
-  // Draws `img` centered in a `size`×`size` box at (cx,cy), cropping to a
-  // centered square first — same behavior as CSS `object-fit: cover` with
-  // `object-position: center`. Prevents off-center/stretched art when the
-  // source image isn't perfectly square. Optional `zoom` (>1) crops in
-  // further from center — useful when a source image has a lot of empty
-  // padding around the actual logo/art.
+  // draws img centered/cropped into a size×size box (like CSS object-fit: cover); zoom crops in further
   function drawImageCentered(img, cx, cy, size, zoom){
     zoom = zoom || 1;
     const iw = img.naturalWidth || img.width, ih = img.naturalHeight || img.height;
@@ -1405,9 +1473,7 @@ function draw(){
     ctx.drawImage(img, sx, sy, side, side, cx-size/2, cy-size/2, size, size);
   }
 
-  // Background transforms across the timeline: earliest years sit in the
-  // deep base teal, later years warm slightly toward the peach accent —
-  // so walking top-to-bottom visibly moves you through time.
+  // background warms slightly from earliest year (top) to latest (bottom)
   const bgGrad = ctx.createLinearGradient(0,0,0,H);
   bgGrad.addColorStop(0,   '#122F29');
   bgGrad.addColorStop(0.5, '#154139');
@@ -1420,8 +1486,7 @@ function draw(){
   const vgs=42;
   for(let x=0;x<=W;x+=vgs){ ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,H);ctx.stroke(); }
 
-  // timeline gridlines — one per whole year, labeled along the left
-  // edge so the canvas reads as a real top-to-bottom timeline
+  // timeline gridlines, one per year, labeled along the left edge
   const axisX = 46;
   ctx.strokeStyle='rgba(170,240,220,.32)'; ctx.lineWidth=1.5;
   ctx.beginPath();ctx.moveTo(axisX,0);ctx.lineTo(axisX,H);ctx.stroke();
@@ -1458,8 +1523,7 @@ function draw(){
     ctx.strokeRect(r.x0, r.y0, r.w, r.h);
   });
 
-  // year barrier — the locked line the player can't cross until they
-  // find the key. Removed automatically once every year is unlocked.
+  // year barrier — removed once every year is unlocked
   if(game.unlockIndex < UNLOCK_ORDER.length-1){
     const by = frontierTopY(game.unlockIndex)*H;
     ctx.save();
@@ -1522,8 +1586,7 @@ function draw(){
   const ring=reduceMotion?18:18+Math.sin(game.t*3)*2.5;
   ctx.beginPath();ctx.arc(pl.px,pl.py,ring,0,7);ctx.strokeStyle='rgba(255,201,143,.55)';ctx.lineWidth=2;ctx.stroke();
 
-  // pick the sprite for the current facing direction, falling back to a
-  // mirrored version of whichever direction IS loaded if the other is missing
+  // pick sprite for facing direction, or mirror the other one if missing
   let sprite = pl.facing==='left' ? characterImgLeft : characterImgRight;
   let mirror = false;
   if(!(sprite && sprite.loaded)){
