@@ -242,12 +242,13 @@
   .footer-contact a:hover{color:var(--cobalt)}
 
   /* EVENTS (hackathons / CTFs / conferences) */
-  .event-gallery{display:grid;grid-template-columns:repeat(auto-fit,minmax(90px,1fr));gap:6px}
-  .event-gallery.single{grid-template-columns:1fr}
-  .event-gallery button{appearance:none;border:0;padding:0;cursor:pointer;aspect-ratio:4/3;border-radius:10px;overflow:hidden;background:var(--paper-2);border:1px solid var(--line)}
-  .event-gallery.single button{aspect-ratio:16/10}
-  .event-gallery img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .3s}
-  .event-gallery button:hover img{transform:scale(1.05)}
+  .event-gallery{position:relative;width:100%;aspect-ratio:4/3;border-radius:10px;overflow:hidden;background:var(--paper-2);border:1px solid var(--line);cursor:pointer}
+  .event-gallery img{width:100%;height:100%;object-fit:cover;display:block}
+  .event-nav{position:absolute;top:50%;transform:translateY(-50%);appearance:none;border:1px solid rgba(255,255,255,.35);background:rgba(0,0,0,.4);color:#fff;width:38px;height:38px;border-radius:50%;font-size:1.3rem;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .15s}
+  .event-nav:hover{background:var(--cobalt);border-color:var(--cobalt)}
+  .event-nav.prev{left:10px}
+  .event-nav.next{right:10px}
+  .event-count{position:absolute;right:10px;bottom:10px;font-family:var(--mono);font-size:.7rem;color:#fff;background:rgba(0,0,0,.45);padding:3px 9px;border-radius:999px}
   .event-meta{font-family:var(--mono);font-size:.78rem;color:var(--cobalt-ink);margin-top:-6px}
 
   /* PHOTO LIGHTBOX */
@@ -492,7 +493,7 @@
   <section class="block" id="events">
     <div class="wrap">
       <div class="sec-head"><h2>Events</h2></div>
-      <div class="grid" id="event-cards"><!-- injected from EVENTS --></div>
+      <div class="grid" id="event-cards" style="grid-template-columns:repeat(auto-fill,minmax(340px,1fr))"><!-- injected from EVENTS --></div>
     </div>
   </section>
 
@@ -907,8 +908,13 @@ function renderEventCards(){
     const imgs = ev.images || [];
     const dateLabel = formatDateValue(dateValue(ev));
     const gallery = imgs.length ? `
-      <div class="event-gallery${imgs.length===1?' single':''}">
-        ${imgs.map((src,idx)=>`<button type="button" class="gallery-thumb" data-i="${i}" data-idx="${idx}"><img src="${src}" alt="" loading="lazy" onerror="this.closest('button').remove()"></button>`).join('')}
+      <div class="event-gallery" data-i="${i}" data-idx="0">
+        <img class="event-gallery-img" src="${imgs[0]}" alt="" loading="lazy" onerror="this.closest('.event-gallery').remove()">
+        ${imgs.length>1 ? `
+          <button type="button" class="event-nav prev" aria-label="Previous photo">‹</button>
+          <button type="button" class="event-nav next" aria-label="Next photo">›</button>
+          <div class="event-count">1 / ${imgs.length}</div>
+        ` : ''}
       </div>` : '';
     el.innerHTML = `
       ${gallery}
@@ -921,11 +927,27 @@ function renderEventCards(){
   });
 }
 renderEventCards();
+function stepEventGallery(galleryEl, delta){
+  const i = Number(galleryEl.dataset.i);
+  const imgs = (EVENTS[i] && EVENTS[i].images) || [];
+  if(imgs.length < 2) return;
+  const idx = (Number(galleryEl.dataset.idx) + delta + imgs.length) % imgs.length;
+  galleryEl.dataset.idx = idx;
+  galleryEl.querySelector('.event-gallery-img').src = imgs[idx];
+  galleryEl.querySelector('.event-count').textContent = `${idx+1} / ${imgs.length}`;
+}
 eventCards.addEventListener('click', e=>{
-  const thumb = e.target.closest('.gallery-thumb');
-  if(!thumb) return;
+  const nav = e.target.closest('.event-nav');
+  if(nav){
+    e.preventDefault();
+    e.stopPropagation();
+    stepEventGallery(nav.closest('.event-gallery'), nav.classList.contains('next') ? 1 : -1);
+    return;
+  }
+  const gallery = e.target.closest('.event-gallery');
+  if(!gallery) return;
   e.preventDefault();
-  openLightbox(Number(thumb.dataset.i), Number(thumb.dataset.idx));
+  openLightbox(Number(gallery.dataset.i), Number(gallery.dataset.idx));
 });
 
 /* shared modal */
