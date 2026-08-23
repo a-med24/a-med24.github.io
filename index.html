@@ -383,8 +383,11 @@
   .post-links{display:flex;flex-wrap:wrap;gap:16px;font-family:var(--mono);font-size:.85rem;font-weight:700;margin-bottom:32px}
   .post-links a{color:var(--cobalt);display:inline-flex;align-items:center;gap:5px}
   .post-links a:hover{text-decoration:underline}
-  .post-desc p{color:var(--ink);font-size:1.05rem;line-height:1.75;margin-bottom:1.2em;max-width:68ch}
+  .post-desc p{color:var(--ink);font-size:1.05rem;line-height:1.75;margin-bottom:1.2em;max-width:68ch;text-indent:2em}
   .post-desc p:last-child{margin-bottom:0}
+  .post-desc ul{color:var(--ink);font-size:1.05rem;line-height:1.75;margin:-.4em 0 1.2em;padding-left:2.6em;max-width:68ch}
+  .post-desc ul li{margin-bottom:.3em}
+  .post-desc ul li::marker{color:var(--cobalt)}
   .post-gallery{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px;margin-top:38px}
   .post-gallery img{width:100%;aspect-ratio:4/3;border-radius:12px;border:1px solid var(--line);object-fit:cover;background:var(--paper-2)}
 
@@ -1005,7 +1008,11 @@ function openPost(i){
 
   const text = (p.fullDesc && p.fullDesc.trim()) ? p.fullDesc : p.desc;
   document.getElementById('post-desc').innerHTML =
-    text.split(/\n\s*\n/).map(para=>`<p>${para.trim()}</p>`).join('');
+    text.split(/\n\s*\n/).map(para=>{
+      const trimmed = para.trim();
+      // don't wrap block-level content (e.g. a <ul> list) in a <p>
+      return /^<(ul|ol|div|blockquote|table)[\s>]/i.test(trimmed) ? trimmed : `<p>${trimmed}</p>`;
+    }).join('');
 
   const gallery = document.getElementById('post-gallery');
   const galleryImages = (p.images && p.images.length > 1) ? p.images.slice(1) : [];
