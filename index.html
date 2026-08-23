@@ -811,6 +811,28 @@ function getYouTubeId(url){
   return m ? m[1] : null;
 }
 
+// y position/date label is derived from a project's date (year, or "YYYY-MM" string)
+function dateValue(p){
+  const d = p.date != null ? p.date : p.year; // p.year kept for backwards compat
+  if(typeof d === 'number') return d;
+  if(typeof d === 'string'){
+    const m = d.match(/^(\d{4})(?:-(\d{1,2}))?$/);
+    if(m){
+      const y = parseInt(m[1],10);
+      const mo = m[2] ? parseInt(m[2],10) : 1;
+      return y + (Math.min(Math.max(mo,1),12)-1)/12;
+    }
+  }
+  return null;
+}
+const MONTH_NAMES = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+function formatDateValue(v){
+  if(typeof v !== 'number') return '';
+  const year = Math.floor(v);
+  const monthIndex = Math.round((v-year)*12); // 0-11
+  return monthIndex===0 ? String(year) : `${MONTH_NAMES[monthIndex]} ${year}`;
+}
+
 /* build read-mode cards */
 const cards = document.getElementById('cards');
 PROJECTS.forEach((p,i)=>{
@@ -1106,27 +1128,6 @@ const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').match
 if('ontouchstart' in window || navigator.maxTouchPoints>0) document.body.classList.add('touch');
 
 let W=0, H=0, dpr=1;
-// y position is derived from a project's date (year, or "YYYY-MM" string)
-function dateValue(p){
-  const d = p.date != null ? p.date : p.year; // p.year kept for backwards compat
-  if(typeof d === 'number') return d;
-  if(typeof d === 'string'){
-    const m = d.match(/^(\d{4})(?:-(\d{1,2}))?$/);
-    if(m){
-      const y = parseInt(m[1],10);
-      const mo = m[2] ? parseInt(m[2],10) : 1;
-      return y + (Math.min(Math.max(mo,1),12)-1)/12;
-    }
-  }
-  return null;
-}
-const MONTH_NAMES = ['January','February','March','April','May','June','July','August','September','October','November','December'];
-function formatDateValue(v){
-  if(typeof v !== 'number') return '';
-  const year = Math.floor(v);
-  const monthIndex = Math.round((v-year)*12); // 0-11
-  return monthIndex===0 ? String(year) : `${MONTH_NAMES[monthIndex]} ${year}`;
-}
 const DATE_VALUES = PROJECTS.map(dateValue).filter(v=>typeof v==='number');
 const YEAR_MIN = DATE_VALUES.length ? Math.floor(Math.min(...DATE_VALUES)) : 0;
 const YEAR_MAX = DATE_VALUES.length ? Math.max(Math.ceil(Math.max(...DATE_VALUES)), YEAR_MIN+1) : 1;
