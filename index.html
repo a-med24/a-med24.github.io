@@ -780,6 +780,7 @@ const CERTIFICATIONS = [
 ];
 
 // EVENTS fields: name, date, location (optional), desc, tags (optional), images (first = cover photo)
+// shown newest-to-oldest automatically — order them however you like below
 const EVENTS = [
   {
     name: "SparkHacks 2026",
@@ -914,11 +915,14 @@ CERTIFICATIONS.forEach(c=>{
   certList.appendChild(el);
 });
 
-/* build events cards */
+/* build events cards, sorted newest date first */
 const eventCards = document.getElementById('event-cards');
 function renderEventCards(){
   eventCards.innerHTML = '';
-  EVENTS.forEach((ev,i)=>{
+  const order = EVENTS
+    .map((ev,i)=>({ ev, i }))
+    .sort((a,b)=> (dateValue(b.ev) ?? -Infinity) - (dateValue(a.ev) ?? -Infinity));
+  order.forEach(({ev,i})=>{
     const el = document.createElement('article');
     el.className = 'card event-card';
     const imgs = ev.images || [];
