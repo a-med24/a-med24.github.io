@@ -711,7 +711,7 @@ const PROJECTS = [
     fullDesc: "Checkers is a client-server multiplayer game built in Java, pairing a multithreaded TCP server with a JavaFX desktop client. \n\n The server accepts connections, spins up a dedicated thread per player, queues players for matchmaking, and manages active game sessions. All communication is handled through a custom serializable message protocol covering login, moves, chat, rematches, and disconnects. Game state and rule enforcement live entirely in a server-authoritative checkers engine that handles legal move validation, mandatory jumps, chained multi-jump captures, king promotion, and win/draw detection, so both clients always see a consistent, validated board. On the client side, players log in, see a live list of other connected users, chat in a shared lobby or privately, get matched into a game, and play on a fully rendered board that supports four selectable visual themes, each with matching king-piece artwork: \n\n <ul><li>Default</li><li>Sakura</li><li>Ocean</li><li>Wicked</li></ul> \n\n A separate server admin window shows a live activity log of connections, moves, and disconnects. The project demonstrates client-server network programming, multithreaded server design, and implementing non-trivial game logic (chain captures, king rules, turn management) cleanly separated from the UI."
   },
   {
-    name: "Cat Weather App",
+    name: "Weather App",
     date: "2026-04",
     x: 0.1,
     tags: ["Java", "JavaFX", "Maven", "NWS Rest API"],
