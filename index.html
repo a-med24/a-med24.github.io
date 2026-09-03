@@ -685,6 +685,18 @@
 
 const PROJECTS = [
   {
+    name: "Fatigue Console",
+    date: "2026-09",
+    x: 0.7,
+    tags: ["Python", "HTML", "IBM Bob", "AI", "Mock Database"],
+    desc: "An application made during IBM's AI Build Hackathon focused on monitoring astronaut's health and making an AI-assisted decision support system that transforms creww fatigue signals into mission-risk insights.",
+    live: "https://youtu.be/yIfrLO1BzVs?si=99XkDs5zWKI3Jt5r",
+    code: "https://github.com/MitPat-el/IBM_AI_Build",
+    icon: "assets/icons/image (2).png",
+    images: [],
+    fullDesc: "Space missions operate in high-stakes environments where human-performance data, schedules, mission tasks, and operational dependencies must be interpreted under limited time and resources. Fatigue Console addresses this challenge. \n\n Fatigue Console is an AI-assisted mission decision-support system that transforms crew fatigue signals into mission-risk insights, tests intervention tradeoffs across crew and mission tasks, and uses IBM Granite to explain decision options for human review. Rather than presenting mission personnel with disconnected fatigue measurements, the system connects human-performance signals to mission operations and uses AI to turn those results into understandable decision support. \n\n Features: \n\n <ul><li>Fatigue Drift Score</li><li>Mission Risk Projection</li><li>Historical Replay</li><li>What-If Simulator + Dependency Graph</li><li>IBM Granite Mission Decision Brief</li></ul> \n\n The Fatigue Drift Score utilizes four human-performance signals: Reaction-Time, Sleep Debt, Circadian Phase Shift, and Workload. This is done for each astronaut and mission day and are transformed by a deterministic model into an interpretable drift score and risk state. \n\n The Mission Risk Projection puts individual fatigue states into a wider mission timeline so users can identify when crew risk develops and where/when the highest project fatigue risk occurs. \n\n The Historical Replay allows for mission personnel to inspect previous mission days to understand how an astronaut reached the current state. \n\n The What-If Simulator + Dependency Graph allows users to test hypothetical interventions, such as reassigning a demanding task from one astronaut to another. \n\n The IBM Granite Mission Decision Brieg receives the already-computed, structured mission fact and translates them into a Mission Decision Brief containing the current astronaut's state, primary fatgiue drivers, mission implications, intervention assessment, receiver workload / fatigue tradeoffs, recommended actions, uncertainties, and has a human-review requirement."
+  },
+  {
     name: "LitQuest",
     date: "2026-03", 
     x: 0.42,
@@ -763,14 +775,6 @@ const IN_PROGRESS = [
     name: "Patchwork",
     desc: "Munincipal intelligence platform that turns citizen reports and city data into actionable information for local governments.",
     tags: ["AI", "TBD"],
-    status: "In progress",
-    live: "",
-    code: ""
-  },
-  {
-    name: "IBM Bob Hackathon",
-    desc: "Working with a team in the IBM Hackathon to help with space exploration.",
-    tags: ["React", "Python"],
     status: "In progress",
     live: "",
     code: ""
